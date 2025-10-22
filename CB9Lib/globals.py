@@ -14,7 +14,7 @@ from datetime import datetime
 # GLOBAL PATHS
 # -----------------------------------------------------------------------------
 ROOT_DIR = os.path.expanduser("~/Documents/script")
-LOG_DIR = os.path.join(ROOT_DIR, "logs")
+LOG_DIR = os.path.expanduser("~/Documents/logs")
 TEMP_DIR = os.path.join(ROOT_DIR, "temp")
 
 # -----------------------------------------------------------------------------
