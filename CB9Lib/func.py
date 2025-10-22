@@ -14,13 +14,15 @@
 # sleep(seconds: float = 1.0)
 # load_json_config(jsonFileName: str)
 # save_json_config(jsonFileName: str, data: dict)
-# header(title: str = "Untitled Script", version: str = "v1.0")
+# header(title: str = "Untitled Script", version: str = "v1.0", subtitle: str = "")
 # footerMenu(legend: str = "")
 # file_exists(path: str)
 # folder_exists(path: str)
 # ensure_folder(path: str)
 # list_files(path: str, ext: str = None)
 # write_log(message: str, filename: str = None)
+# log_header(job_name: str, version: str = "v1.0", filename: str = None)
+# log_footer(job_name: str, version: str = "v1.0", filename: str = None)
 # test_ui()
 # -----------------------------------------------------------------------------
 # Revision History:
@@ -171,6 +173,54 @@ def write_log(message: str, filename: str = None):
         print(f"{BOLD}{YELLOW}{message}{RESET}")
     except Exception as e:
         print(color_text(f"[ERROR] Could not write log: {e}", RED, style=BOLD))
+
+
+def log_header(job_name: str, version: str = "v1.0", filename: str = None):
+    """
+    Write a log header at the start of a job.
+    Logs the job name, version, and start timestamp with a separator line.
+    """
+    ensure_folder(LOG_DIR)
+    if not filename:
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        filename = os.path.join(LOG_DIR, f"{job_name.replace(' ', '_')}_{timestamp}.log")
+
+    separator = "-" * 80
+    start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    try:
+        with open(filename, "a") as log_file:
+            log_file.write(f"{separator}\n")
+            log_file.write(f"JOB: {job_name} {version}\n")
+            log_file.write(f"START: {start_time}\n")
+            log_file.write(f"{separator}\n")
+        print(color_text(f"[LOG] Started: {job_name} {version}", BRIGHT_GREEN, style=BOLD))
+        return filename
+    except Exception as e:
+        print(color_text(f"[ERROR] Could not write log header: {e}", RED, style=BOLD))
+        return None
+
+
+def log_footer(job_name: str, version: str = "v1.0", filename: str = None):
+    """
+    Write a log footer at the end of a job.
+    Logs the job name, version, and end timestamp.
+    """
+    if not filename:
+        print(color_text("[WARNING] No log filename provided for footer", YELLOW))
+        return
+
+    end_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    separator = "-" * 80
+
+    try:
+        with open(filename, "a") as log_file:
+            log_file.write(f"END: {end_time}\n")
+            log_file.write(f"JOB: {job_name} {version}\n")
+            log_file.write(f"{separator}\n\n")
+        print(color_text(f"[LOG] Completed: {job_name} {version}", BRIGHT_GREEN, style=BOLD))
+    except Exception as e:
+        print(color_text(f"[ERROR] Could not write log footer: {e}", RED, style=BOLD))
 
 # -----------------------------------------------------------------------------
 # Debug/Test
