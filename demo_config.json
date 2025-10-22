@@ -1,0 +1,8 @@
+{
+    "app_name": "CB9Lib Demo",
+    "version": "1.1.0",
+    "settings": {
+        "color_enabled": true,
+        "log_level": "INFO"
+    }
+}
