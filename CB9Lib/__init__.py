@@ -29,7 +29,7 @@ from .func import (
     load_json_config, save_json_config,
     header, footerMenu,
     file_exists, folder_exists, ensure_folder, list_files,
-    write_log, test_ui
+    write_log, log_header, log_footer, test_ui
 )
 
 from .globals import (
@@ -54,7 +54,7 @@ __all__ = [
     "load_json_config", "save_json_config",
     "header", "footerMenu",
     "file_exists", "folder_exists", "ensure_folder", "list_files",
-    "write_log", "test_ui",
+    "write_log", "log_header", "log_footer", "test_ui",
     # Global settings
     "ROOT_DIR", "LOG_DIR", "TEMP_DIR",
     "get_timestamp", "print_banner", "SETTINGS",
