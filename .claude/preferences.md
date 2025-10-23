@@ -440,6 +440,13 @@ This section contains custom commands that trigger specific actions. Add new com
 - Display shortcuts in **UPPERCASE** when showing them to the user
 - Example: User types "export rules" → Display as "EXPORT RULES"
 
+**Screenshot Reference Rule:**
+- When user says "latest screenshot" or references a screenshot without a specific path:
+  - Look in `/Users/john-ash/Documents/screenshotsLocal/`
+  - Find the most recent image file (by modification time)
+  - Read and analyze that file
+  - Common image formats: .png, .jpg, .jpeg, .gif, .webp
+
 ---
 
 ### Command: "Export Rules"
