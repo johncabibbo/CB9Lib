@@ -23,6 +23,7 @@
 # write_log(message: str, filename: str = None)
 # log_header(job_name: str, version: str = "v1.0", filename: str = None)
 # log_footer(job_name: str, version: str = "v1.0", filename: str = None)
+# logRotate(script_name: str, version: str = "v1.0", old_filename: str = None)
 # test_ui()
 # -----------------------------------------------------------------------------
 # Revision History:
@@ -221,6 +222,58 @@ def log_footer(job_name: str, version: str = "v1.0", filename: str = None):
         print(color_text(f"[LOG] Completed: {job_name} {version}", BRIGHT_GREEN, style=BOLD))
     except Exception as e:
         print(color_text(f"[ERROR] Could not write log footer: {e}", RED, style=BOLD))
+
+
+def logRotate(script_name: str, version: str = "v1.0", old_filename: str = None) -> str:
+    """
+    Rotate the log file and create a new one with a header.
+
+    Creates a new timestamped log file with a header containing:
+    - Created Date
+    - Script Name
+    - Version
+
+    Args:
+        script_name: Name of the script/job
+        version: Version string (default "v1.0")
+        old_filename: Optional previous log file (for reference only)
+
+    Returns:
+        str: Path to the new log file
+    """
+    ensure_folder(LOG_DIR)
+
+    # Close old log with footer if provided
+    if old_filename:
+        try:
+            end_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            separator = "-" * 80
+            with open(old_filename, "a") as log_file:
+                log_file.write(f"END: {end_time}\n")
+                log_file.write(f"LOG ROTATED\n")
+                log_file.write(f"{separator}\n\n")
+        except Exception as e:
+            print(color_text(f"[WARNING] Could not close old log: {e}", YELLOW))
+
+    # Create new log file with timestamp
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    new_filename = os.path.join(LOG_DIR, f"{script_name.replace(' ', '_')}_{timestamp}.log")
+
+    created_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    separator = "-" * 80
+
+    try:
+        with open(new_filename, "w") as log_file:
+            log_file.write(f"{separator}\n")
+            log_file.write(f"LOG FILE CREATED: {created_date}\n")
+            log_file.write(f"SCRIPT: {script_name}\n")
+            log_file.write(f"VERSION: {version}\n")
+            log_file.write(f"{separator}\n")
+        print(color_text(f"[LOG] Rotated: {new_filename}", BRIGHT_CYAN, style=BOLD))
+        return new_filename
+    except Exception as e:
+        print(color_text(f"[ERROR] Could not create rotated log: {e}", RED, style=BOLD))
+        return None
 
 # -----------------------------------------------------------------------------
 # Debug/Test
