@@ -447,6 +447,15 @@ This section contains custom commands that trigger specific actions. Add new com
   - Read and analyze that file
   - Common image formats: .png, .jpg, .jpeg, .gif, .webp
 
+**Accessibility Note:**
+- **User is color blind** - Keep this in mind when:
+  - Suggesting color schemes or palettes
+  - Designing UI with color-coded information
+  - Choosing colors for charts, graphs, or visualizations
+  - Recommending accessible color combinations with high contrast
+  - Avoiding reliance on color alone to convey information
+  - Consider using patterns, textures, or labels in addition to color
+
 ---
 
 ### Command: "Export Rules"
