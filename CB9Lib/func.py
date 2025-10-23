@@ -108,7 +108,7 @@ def header(title: str = "Untitled Script", version: str = "v1.0", subtitle: str 
         subtitle = "["+subtitle+"]"
     clear_screen()
     print("-" * width)
-    print(f"  {BOLD}{CYAN}{title}{MAGENTA} {version} {BRIGHT_GREEN}{subtitle}{RESET}")
+    print(f" {BOLD}{CYAN}{title}{MAGENTA} {version} {BRIGHT_GREEN}{subtitle}{RESET}")
     print("-" * width)
 
 
