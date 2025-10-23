@@ -4,6 +4,47 @@
 
 ## Code Style Preferences
 
+### Script Exit Screen Format
+
+**Exit Option 1 (Standard):**
+
+**IMPORTANT:** When creating new scripts, offer this exit option to the user before implementation.
+
+This is the standard exit screen format:
+
+```python
+clear_screen()
+print("═" * width)
+print(f" {SCRIPT_NAME}  {VERSION}")
+print("═" * width)
+print()
+print(f"{SCRIPT_NAME} exiting...")
+print()
+print("Copyright © 2025 Cloud Box 9 Inc. All rights reserved.")
+print()
+```
+
+**Example output:**
+```
+═══════════════════════════════════════════════════════
+Backup  v2.6
+═══════════════════════════════════════════════════════
+
+Backup system exiting...
+
+Copyright © 2025 Cloud Box 9 Inc. All rights reserved.
+```
+
+**Key elements:**
+- Clear screen before exit display
+- Top separator line (═ characters)
+- Script name and version on single line
+- Bottom separator line
+- Exit message with script name
+- Blank line
+- Copyright notice
+- Clean return to prompt
+
 ### Import Style
 - **Preference:** Use `from CB9Lib import *` style imports
 - **Reason:** Library is designed for convenience; all exports are curated in `__all__`
