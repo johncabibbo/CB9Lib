@@ -435,6 +435,11 @@ write_log("Application started")
 
 This section contains custom commands that trigger specific actions. Add new commands here as needed.
 
+**General Rules:**
+- All shortcuts are **case insensitive** (e.g., "shortcuts", "SHORTCUTS", "Shortcuts" all work)
+- Display shortcuts in **UPPERCASE** when showing them to the user
+- Example: User types "export rules" → Display as "EXPORT RULES"
+
 ---
 
 ### Command: "Export Rules"
@@ -519,13 +524,14 @@ User Defined Commands:
 
 ### Command: "commit and push"
 
-**Trigger:** User says "commit and push"
+**Trigger:** User says "commit and push" (case insensitive)
 
 **Action:**
 1. Check git status to see all modified/untracked files
 2. Read current version from `CB9Lib/__init__.py` (__version__)
-3. Stage all relevant changes (add files to git)
-4. If multiple git repositories are detected in the working directories:
+3. Display current repository name
+4. Stage all relevant changes (add files to git)
+5. If multiple git repositories are detected in the working directories:
    - Display a menu with options:
      ```
      Select repository:
@@ -533,14 +539,16 @@ User Defined Commands:
      Option B: >>> /path/to/repo2
      ```
    - Wait for user selection
-5. Generate appropriate commit message based on changes
-6. Include version number in commit message (e.g., "v1.2.0" or similar format)
-7. Create commit with generated message including version
-8. Push to remote repository
-9. Confirm success with commit hash and push status
+6. Generate appropriate commit message based on changes
+7. Include version number in commit message (e.g., "v1.2.0" or similar format)
+8. Create commit with generated message including version
+9. Push to remote repository
+10. Display repository name in confirmation
+11. Confirm success with commit hash and push status
 
 **Notes:**
 - Follows standard git commit message conventions
+- Displays repository name when performing commit and push
 - Includes current version number in commit message
 - Includes Claude Code co-authorship footer
 - Checks for multiple repos in working directories
