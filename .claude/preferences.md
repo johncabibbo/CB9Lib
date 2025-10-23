@@ -575,6 +575,52 @@ N. [command text]
 
 ---
 
+### Command: "Ready project"
+
+**Trigger:** User says "Ready project"
+
+**Action:**
+1. Increment the version number by 0.1 (e.g., 1.2 → 1.3)
+2. Update version in all appropriate files:
+   - `CB9Lib/__init__.py` (__version__)
+   - `setup.py` (version)
+   - `pyproject.toml` (version)
+   - Module headers that changed (func.py, colors.py, globals.py)
+3. Update "Last Modified Date" to today's date in all changed module headers
+4. Add entry to Revision History in changed modules
+5. Display summary of version updates
+
+**Notes:**
+- Only updates headers for modules that have actual code changes
+- Maintains consistent version numbering across all package files
+- Updates Last Modified Date to current date (YYYY-MM-DD)
+
+---
+
+### Command: "Ready project version X"
+
+**Trigger:** User says "Ready project version X" (where X is the new version number, e.g., "Ready project version 2.0", "Ready project version 1.5")
+
+**Action:**
+1. Set the version number to X (e.g., "Ready project version 2.0" sets version to 2.0)
+2. Update version in all appropriate files:
+   - `CB9Lib/__init__.py` (__version__)
+   - `setup.py` (version)
+   - `pyproject.toml` (version)
+   - Module headers that changed (func.py, colors.py, globals.py)
+3. Update "Last Modified Date" to today's date in all changed module headers
+4. Add entry to Revision History in changed modules
+5. Display summary of version updates
+
+**Notes:**
+- Sets version to specific value (not incremental)
+- Only updates headers for modules that have actual code changes
+- Maintains consistent version numbering across all package files
+- Updates Last Modified Date to current date (YYYY-MM-DD)
+- Example: "Ready project version 2.0" → version becomes 2.0
+
+---
+
 ### Command: [Future Command Name]
 
 **Trigger:** [User phrase or command]
