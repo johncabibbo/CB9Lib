@@ -523,8 +523,9 @@ User Defined Commands:
 
 **Action:**
 1. Check git status to see all modified/untracked files
-2. Stage all relevant changes (add files to git)
-3. If multiple git repositories are detected in the working directories:
+2. Read current version from `CB9Lib/__init__.py` (__version__)
+3. Stage all relevant changes (add files to git)
+4. If multiple git repositories are detected in the working directories:
    - Display a menu with options:
      ```
      Select repository:
@@ -532,13 +533,15 @@ User Defined Commands:
      Option B: >>> /path/to/repo2
      ```
    - Wait for user selection
-4. Generate appropriate commit message based on changes
-5. Create commit with generated message
-6. Push to remote repository
-7. Confirm success with commit hash and push status
+5. Generate appropriate commit message based on changes
+6. Include version number in commit message (e.g., "v1.2.0" or similar format)
+7. Create commit with generated message including version
+8. Push to remote repository
+9. Confirm success with commit hash and push status
 
 **Notes:**
 - Follows standard git commit message conventions
+- Includes current version number in commit message
 - Includes Claude Code co-authorship footer
 - Checks for multiple repos in working directories
 - Menu format uses "Option A: >>>" style
