@@ -76,6 +76,67 @@ def test_ui()
 
 ## Documentation Standards
 
+### CB9Lib Module Header Requirements
+
+**CRITICAL RULE for CB9Lib Package Updates:** When updating any module in the CB9Lib package (colors.py, func.py, globals.py, __init__.py), the header MUST follow these comprehensive documentation requirements:
+
+#### Function List Format Requirements:
+1. **Complete function signatures** with all parameters, defaults, and return types
+2. **Function description** on indented line immediately below signature
+3. **All arguments documented** one per line with descriptions
+4. **Path type specifications** for file/folder arguments (absolute or relative)
+5. **Example inputs** for all file/folder path parameters
+6. **Return types** explicitly shown in signature (-> type)
+
+#### Example Header Format for func.py:
+```python
+#!/opt/homebrew/opt/python@3.12/libexec/bin/python3
+#
+# Filename: func.py
+# Project: Shared Library
+# Version: 1.2
+# Description: Common functions for Cloud Box 9 projects (UI + JSON + Console).
+# Maintainer: Cloud Box 9 Inc.
+# Last Modified Date: 2025-10-23
+# -----------------------------------------------------------------------------
+# Function List:
+# -----------------------------------------------------------------------------
+# function_name(param1: str, param2: int = 0) -> ReturnType
+#     Brief description of what the function does
+#     param1: Description of first parameter
+#     param2: Description of second parameter
+#
+# file_operation(path: str) -> bool
+#     Check if a file exists
+#     path: Path to file (absolute or relative)
+#           Example: "data.txt" or "/Users/user/data.txt"
+#
+# -----------------------------------------------------------------------------
+# Revision History:
+# -----------------------------------------------------------------------------
+# v1.2 (2025-10-23)
+#   • Description of changes
+# -----------------------------------------------------------------------------
+```
+
+#### When to Update:
+- Adding new functions → Add to Function List with complete documentation
+- Modifying function signatures → Update the Function List entry
+- Changing behavior → Update description and revision history
+- Updating version → Increment version number and add revision history entry
+- **Always** update Last Modified Date to current date
+
+#### Validation Checklist for CB9Lib Module Headers:
+- [ ] All functions listed in Function List section
+- [ ] Each function has signature with all parameters and return type
+- [ ] Each function has description line
+- [ ] Each parameter documented with description
+- [ ] File/folder paths show "absolute or relative"
+- [ ] File/folder paths include example input
+- [ ] Version number incremented if changes made
+- [ ] Last Modified Date is current
+- [ ] Revision History updated with changes
+
 ### File Headers
 
 **CRITICAL RULE:** Every Python file MUST include Project and Version in the header. No exceptions.
@@ -369,6 +430,161 @@ write_log("Application started")
 - **Current Version:** 1.1.0
 - **Python Requirement:** >= 3.10
 - **Dependencies:** None (uses only standard library)
+
+## User Defined Commands
+
+This section contains custom commands that trigger specific actions. Add new commands here as needed.
+
+---
+
+### Command: "Export Rules"
+
+**Trigger:** User says "Export Rules"
+
+**Action:**
+1. Generate the human-readable CB9Lib Module Header Requirements
+2. Ensure `~/Documents/script/chatlog/` directory exists (create if needed)
+3. Write the formatted rules to file using the specified header format
+4. Confirm to user that the file has been written
+
+**Output Location:** `/Users/john-ash/Documents/script/chatlog/claude1Rules.txt`
+
+**Output Format:** Human-readable markdown format including:
+- **Shortcuts list section** (at top) - All user-defined commands
+- When rules apply
+- The 6 core requirements with examples
+- Full example
+- When to update table
+- Quick validation checklist
+- Header structure template
+
+**Header Format:**
+- Main title: 90 dashes
+  ```
+  # ------------------------------------------------------------------------------------------
+  # Title Text
+  # ------------------------------------------------------------------------------------------
+  ```
+- Major sections (##): 60 dashes
+  ```
+  # ------------------------------------------------------------
+  ## Section Name
+  # ------------------------------------------------------------
+  ```
+- Subsections (###): 55 dashes
+  ```
+  # -------------------------------------------------------
+  ### Subsection Name
+  # -------------------------------------------------------
+  ```
+- Sub-subsections (####): 50 dashes (and continue decreasing by 5)
+  ```
+  # --------------------------------------------------
+  #### Sub-subsection Name
+  # --------------------------------------------------
+  ```
+- Minimum dash length: 30 dashes (for deepest nested sections)
+- Use `#` comment character at start of border lines
+- Markdown headers (##, ###, ####) for section titles
+
+---
+
+### Command: "shortcuts"
+
+**Trigger:** User says "shortcuts"
+
+**Action:**
+1. Display a list of all defined user commands from this section
+2. Show the trigger phrase and brief description for each command
+3. Format as a readable table or list
+
+**Output Format:** Console output showing:
+- Command name/trigger
+- Brief description of what it does
+- Output location (if applicable)
+
+**Example Output:**
+```
+User Defined Commands:
+----------------------
+1. "Export Rules"
+   - Exports CB9Lib Module Header Documentation Rules
+   - Output: ~/Documents/script/chatlog/claude1Rules.txt
+
+2. "shortcuts"
+   - Displays this list of available commands
+```
+
+---
+
+### Command: "commit and push"
+
+**Trigger:** User says "commit and push"
+
+**Action:**
+1. Check git status to see all modified/untracked files
+2. Stage all relevant changes (add files to git)
+3. If multiple git repositories are detected in the working directories:
+   - Display a menu with options:
+     ```
+     Select repository:
+     Option A: >>> /path/to/repo1
+     Option B: >>> /path/to/repo2
+     ```
+   - Wait for user selection
+4. Generate appropriate commit message based on changes
+5. Create commit with generated message
+6. Push to remote repository
+7. Confirm success with commit hash and push status
+
+**Notes:**
+- Follows standard git commit message conventions
+- Includes Claude Code co-authorship footer
+- Checks for multiple repos in working directories
+- Menu format uses "Option A: >>>" style
+- Will not commit files that likely contain secrets (.env, credentials, etc.)
+
+---
+
+### Command: "Display N chats"
+
+**Trigger:** User says "Display N chats" (where N is a number, e.g., "Display 5 chats", "Display 10 chats")
+
+**Action:**
+1. Extract the number N from the command
+2. Retrieve the last N user commands/messages from the conversation history
+3. Display them in a numbered list format with clear separation
+4. Show commands only (not Claude's responses)
+
+**Output Format:**
+```
+Last N Commands:
+================
+1. [command text]
+2. [command text]
+3. [command text]
+...
+N. [command text]
+```
+
+**Notes:**
+- If N is not specified, default to last 5 commands
+- Shows user input only, not assistant responses
+- Numbered in chronological order (oldest to newest)
+- Clear visual separation between entries
+
+---
+
+### Command: [Future Command Name]
+
+**Trigger:** [User phrase or command]
+
+**Action:**
+[What should happen]
+
+**Output Location:** [If applicable]
+
+---
 
 ## Future Considerations
 

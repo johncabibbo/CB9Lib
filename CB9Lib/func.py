@@ -2,32 +2,108 @@
 #
 # Filename: func.py
 # Project: Shared Library
-# Version: 1.1
+# Version: 1.2
 # Description: Common functions for Cloud Box 9 projects (UI + JSON + Console).
 # Maintainer: Cloud Box 9 Inc.
-# Last Modified Date: 2025-10-22
+# Last Modified Date: 2025-10-23
 # -----------------------------------------------------------------------------
 # Function List:
 # -----------------------------------------------------------------------------
 # clear_screen()
+#     Clear the terminal screen
+#
 # pause(msg: str = "Press Enter to continue...")
+#     Pause for user input with custom message
+#     msg: Message to display to user
+#
 # sleep(seconds: float = 1.0)
-# load_json_config(jsonFileName: str)
+#     Wait for N seconds with visual indicator
+#     seconds: Number of seconds to wait
+#
+# load_json_config(jsonFileName: str) -> dict
+#     Load and parse JSON config file, returns empty dict on error
+#     jsonFileName: Path to JSON file (absolute or relative)
+#                   Example: "config.json" or "/Users/user/config.json"
+#
 # save_json_config(jsonFileName: str, data: dict)
-# header(title: str = "Untitled Script", version: str = "v1.0", subtitle: str = "")
-# footerMenu(legend: str = "")
-# file_exists(path: str)
-# folder_exists(path: str)
+#     Save dictionary to JSON file with indentation
+#     jsonFileName: Path to JSON file (absolute or relative)
+#                   Example: "config.json" or "/Users/user/config.json"
+#     data: Dictionary to save as JSON
+#
+# header(title: str = "Untitled Script", version: str = "v1.0", subtitle: str = "", width: int = 0)
+#     Display full header banner with title, version, and optional subtitle
+#     title: Title of the script/application
+#     version: Version string (e.g., "v1.0")
+#     subtitle: Optional subtitle text
+#     width: Terminal width (0 = auto-detect)
+#
+# footerMenu(legend: str = "", width: int = 0) -> str
+#     Display footer menu with legend and prompt, returns user input
+#     legend: Menu legend/instructions to display
+#     width: Terminal width (0 = auto-detect)
+#
+# file_exists(path: str) -> bool
+#     Check if a file exists
+#     path: Path to file (absolute or relative)
+#           Example: "data.txt" or "/Users/user/data.txt"
+#
+# folder_exists(path: str) -> bool
+#     Check if a directory exists
+#     path: Path to directory (absolute or relative)
+#           Example: "logs" or "/Users/user/Documents/logs"
+#
 # ensure_folder(path: str)
-# list_files(path: str, ext: str = None)
+#     Create directory if not existing
+#     path: Path to directory (absolute or relative)
+#           Example: "output" or "/Users/user/Documents/output"
+#
+# list_files(path: str, ext: str = None) -> list
+#     List files in directory, optionally filter by extension
+#     path: Directory path (absolute or relative)
+#           Example: "data" or "/Users/user/Documents/data"
+#     ext: Optional file extension filter (e.g., ".py", ".json")
+#
 # write_log(message: str, filename: str = None)
-# log_header(job_name: str, version: str = "v1.0", filename: str = None)
+#     Write log message to file and print to console
+#     message: Log message to write
+#     filename: Optional log file path (absolute or relative, auto-generated if None)
+#               Example: "/Users/user/Documents/logs/app.log"
+#
+# log_header(job_name: str, version: str = "v1.0", filename: str = None) -> str
+#     Write log header at start of job, returns filename
+#     job_name: Name of the job/script
+#     version: Version string
+#     filename: Optional log file path (absolute or relative, auto-generated if None)
+#               Example: "/Users/user/Documents/logs/backup.log"
+#
 # log_footer(job_name: str, version: str = "v1.0", filename: str = None)
-# logRotate(script_name: str, version: str = "v1.0", old_filename: str = None)
+#     Write log footer at end of job
+#     job_name: Name of the job/script
+#     version: Version string
+#     filename: Log file path (absolute or relative)
+#               Example: "/Users/user/Documents/logs/backup.log"
+#
+# logRotate(script_name: str, version: str = "v1.0", old_filename: str = None) -> str
+#     Rotate log file, create new timestamped file with header, returns new filename
+#     script_name: Name of the script/job
+#     version: Version string
+#     old_filename: Optional previous log file to close (absolute or relative)
+#                   Example: "/Users/user/Documents/logs/backup_2025-10-23.log"
+#
 # test_ui()
+#     Demonstrate header, footer, and color usage
+#
 # -----------------------------------------------------------------------------
 # Revision History:
 # -----------------------------------------------------------------------------
+# v1.2 (2025-10-23)
+#   • Added logRotate() function for log file rotation with timestamps
+#   • Enhanced Function List with complete parameter descriptions
+#   • Added return type annotations to function signatures
+#   • Added detailed argument descriptions for each parameter
+#   • Added path type specifications and example inputs for file/folder arguments
+#
 # v1.1 (2025-10-22)
 #   • Added full Function List header and Revision History section.
 #   • Integrated write_log() logging function below File Utilities.
