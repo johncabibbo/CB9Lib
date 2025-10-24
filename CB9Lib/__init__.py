@@ -14,6 +14,7 @@
 from . import globals
 from . import colors
 from . import func
+from . import imgvid
 
 # Import commonly used items for convenience
 from .colors import (
@@ -37,11 +38,15 @@ from .globals import (
     get_timestamp, print_banner, SETTINGS
 )
 
+from .imgvid import (
+    create_thumb_resize, list_thumbnails
+)
+
 __version__ = "1.2.0"
 
 __all__ = [
     # Modules
-    "globals", "colors", "func",
+    "globals", "colors", "func", "imgvid",
     # Color functions
     "color_text", "banner", "enable_colors", "test_colors",
     # Colors
@@ -58,4 +63,6 @@ __all__ = [
     # Global settings
     "ROOT_DIR", "LOG_DIR", "TEMP_DIR",
     "get_timestamp", "print_banner", "SETTINGS",
+    # Image/video utilities
+    "create_thumb_resize", "list_thumbnails",
 ]
