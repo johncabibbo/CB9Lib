@@ -7,7 +7,7 @@
 # Maintainer: Cloud Box 9 Inc.
 # Last Modified Date: 2025-10-24
 # -----------------------------------------------------------------------------
-# Function List:
+# Function List: 
 # -----------------------------------------------------------------------------
 # create_thumb_resize(src_path: str, max_width: int = 150, max_height: int = 150, suffix: str = "_tmb") -> str|bool
 #     Create a resized thumbnail from source image
