@@ -2,7 +2,7 @@
 #
 # Filename: __init__.py
 # Project: CB9Lib Library
-# Version: 1.0
+# Version: 1.2
 # Maintainer: Cloud Box 9 Inc
 # Last Modified Date: 2025-10-22
 # -----------------------------------------------------------------------------
@@ -37,7 +37,7 @@ from .globals import (
     get_timestamp, print_banner, SETTINGS
 )
 
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 
 __all__ = [
     # Modules

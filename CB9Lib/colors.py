@@ -2,7 +2,7 @@
 #
 # Filename: colors.py
 # Project: Shared Library
-# Version: 1.1
+# Version: 1.2
 # Description: Full ANSI color and style system with terminal detection.
 # Maintainer: Cloud Box 9 Inc.
 # Last Modified Date: 2025-10-22

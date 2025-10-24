@@ -37,7 +37,7 @@ def print_banner(title: str):
 # -----------------------------------------------------------------------------
 SETTINGS = {
     "project": "SharedLibrary",
-    "version": "1.0",
+    "version": "1.2",
     "log_folder": LOG_DIR,
     "temp_folder": TEMP_DIR
 }

@@ -56,7 +56,7 @@ test_colors()
 from CB9Lib import header, footerMenu, clear_screen
 
 # Display a header
-header("My Application", "v1.0")
+header("My Application", "v1.2")
 
 # Display a footer menu and get user input
 choice = footerMenu("Select an option from the menu below:")

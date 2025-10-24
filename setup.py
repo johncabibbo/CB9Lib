@@ -2,7 +2,7 @@
 #
 # Filename: setup.py
 # Project: CB9Lib
-# Version: 1.1.0
+# Version: 1.2
 # Description: Setup script for installing the Cloud Box 9 shared Python library.
 # Maintainer: Cloud Box 9 Inc.
 # Last Modified Date: 2025-10-22
@@ -17,7 +17,7 @@ long_description = (this_directory / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="CB9Lib",
-    version="1.1.0",
+    version="1.2",
     author="Cloud Box 9 Inc.",
     author_email="info@cloudbox9.com",
     description="Shared utility library for Cloud Box 9 projects with terminal colors, UI components, and file utilities.",

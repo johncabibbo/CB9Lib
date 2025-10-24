@@ -7,7 +7,7 @@ from CB9Lib import *
 
 def main():
     # Display application header
-    header("CB9Lib Demo", "v1.1.0")
+    header("CB9Lib Demo", "v1.2")
 
     # Show some colored text
     print(color_text("Welcome to CB9Lib!", fg=CYAN, style=BOLD))
@@ -45,7 +45,12 @@ def main():
     loaded_config = load_json_config("demo_config.json")
     print(color_text(f"Loaded config: {loaded_config['app_name']}", fg=GREEN))
 
+
     # Log something
+    SCRIPT_NAME="example.py"
+    VERSION="v1.0"
+    LOGFILE="/Users/john-ash/Documents/logs/example.log"
+    log_header(SCRIPT_NAME, VERSION, LOGFILE)
     write_log("Demo application started successfully")
 
     print()

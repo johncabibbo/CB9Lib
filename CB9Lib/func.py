@@ -31,10 +31,10 @@
 #                   Example: "config.json" or "/Users/user/config.json"
 #     data: Dictionary to save as JSON
 #
-# header(title: str = "Untitled Script", version: str = "v1.0", subtitle: str = "", width: int = 0)
+# header(title: str = "Untitled Script", version: str = "v1.2", subtitle: str = "", width: int = 0)
 #     Display full header banner with title, version, and optional subtitle
 #     title: Title of the script/application
-#     version: Version string (e.g., "v1.0")
+#     version: Version string (e.g., "v1.2")
 #     subtitle: Optional subtitle text
 #     width: Terminal width (0 = auto-detect)
 #
@@ -70,21 +70,21 @@
 #     filename: Optional log file path (absolute or relative, auto-generated if None)
 #               Example: "/Users/user/Documents/logs/app.log"
 #
-# log_header(job_name: str, version: str = "v1.0", filename: str = None) -> str
+# log_header(job_name: str, version: str = "v1.2", filename: str = None) -> str
 #     Write log header at start of job, returns filename
 #     job_name: Name of the job/script
 #     version: Version string
 #     filename: Optional log file path (absolute or relative, auto-generated if None)
 #               Example: "/Users/user/Documents/logs/backup.log"
 #
-# log_footer(job_name: str, version: str = "v1.0", filename: str = None)
+# log_footer(job_name: str, version: str = "v1.2", filename: str = None)
 #     Write log footer at end of job
 #     job_name: Name of the job/script
 #     version: Version string
 #     filename: Log file path (absolute or relative)
 #               Example: "/Users/user/Documents/logs/backup.log"
 #
-# logRotate(script_name: str, version: str = "v1.0", old_filename: str = None) -> str
+# logRotate(script_name: str, version: str = "v1.2", old_filename: str = None) -> str
 #     Rotate log file, create new timestamped file with header, returns new filename
 #     script_name: Name of the script/job
 #     version: Version string
@@ -175,7 +175,7 @@ def save_json_config(jsonFileName: str, data: dict):
 # -----------------------------------------------------------------------------
 # UI Elements
 # -----------------------------------------------------------------------------
-def header(title: str = "Untitled Script", version: str = "v1.0", subtitle: str = "", width: int = 0):
+def header(title: str = "Untitled Script", version: str = "v1.2", subtitle: str = "", width: int = 0):
     """
     Display a full header banner with title and version.
     """
@@ -252,7 +252,7 @@ def write_log(message: str, filename: str = None):
         print(color_text(f"[ERROR] Could not write log: {e}", RED, style=BOLD))
 
 
-def log_header(job_name: str, version: str = "v1.0", filename: str = None):
+def log_header(job_name: str, version: str = "v1.2", filename: str = None):
     """
     Write a log header at the start of a job.
     Logs the job name, version, and start timestamp with a separator line.
@@ -278,7 +278,7 @@ def log_header(job_name: str, version: str = "v1.0", filename: str = None):
         return None
 
 
-def log_footer(job_name: str, version: str = "v1.0", filename: str = None):
+def log_footer(job_name: str, version: str = "v1.2", filename: str = None):
     """
     Write a log footer at the end of a job.
     Logs the job name, version, and end timestamp.
@@ -300,7 +300,7 @@ def log_footer(job_name: str, version: str = "v1.0", filename: str = None):
         print(color_text(f"[ERROR] Could not write log footer: {e}", RED, style=BOLD))
 
 
-def logRotate(script_name: str, version: str = "v1.0", old_filename: str = None) -> str:
+def logRotate(script_name: str, version: str = "v1.2", old_filename: str = None) -> str:
     """
     Rotate the log file and create a new one with a header.
 
@@ -311,7 +311,7 @@ def logRotate(script_name: str, version: str = "v1.0", old_filename: str = None)
 
     Args:
         script_name: Name of the script/job
-        version: Version string (default "v1.0")
+        version: Version string (default "v1.2")
         old_filename: Optional previous log file (for reference only)
 
     Returns:
