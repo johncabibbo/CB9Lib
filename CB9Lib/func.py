@@ -2,10 +2,10 @@
 #
 # Filename: func.py
 # Project: Shared Library
-# Version: 1.2
+# Version: 1.3
 # Description: Common functions for Cloud Box 9 projects (UI + JSON + Console).
 # Maintainer: Cloud Box 9 Inc.
-# Last Modified Date: 2025-10-23
+# Last Modified Date: 2025-10-24
 # -----------------------------------------------------------------------------
 # Function List:
 # -----------------------------------------------------------------------------
@@ -64,6 +64,14 @@
 #           Example: "data" or "/Users/user/Documents/data"
 #     ext: Optional file extension filter (e.g., ".py", ".json")
 #
+# remove_files(path: str, filelist: Optional[List[str]] = None, dry_run: bool = False, log_deletions: bool = True) -> bool
+#     Delete files matching patterns from path recursively (secure, no shell injection)
+#     path: Root directory to search (absolute or relative)
+#           Example: "/Volumes/Data" or "~/Documents/cleanup"
+#     filelist: List of filename patterns to delete (e.g., ['.DS_Store', '*.tmp', '*.log'])
+#     dry_run: If True, shows what would be deleted without actually deleting
+#     log_deletions: If True, logs all deletions to LOG_DIR with timestamps
+#
 # write_log(message: str, filename: str = None)
 #     Write log message to file and print to console
 #     message: Log message to write
@@ -97,6 +105,16 @@
 # -----------------------------------------------------------------------------
 # Revision History:
 # -----------------------------------------------------------------------------
+# v1.3 (2025-10-24)
+#   • Major security update to remove_files() function
+#   • Replaced shell command execution with native pathlib operations (eliminates shell injection risk)
+#   • Added proper type hints (Optional[List[str]]) and fixed boolean return values
+#   • Added dry_run mode for safe testing before deletion
+#   • Added automatic logging of deletions with timestamps
+#   • Improved error handling with separate permission error detection
+#   • Added wildcard pattern support (e.g., '*.tmp', '.DS_Store')
+#   • Added typing module imports (List, Optional) for better type safety
+#
 # v1.2 (2025-10-23)
 #   • Added logRotate() function for log file rotation with timestamps
 #   • Enhanced Function List with complete parameter descriptions
@@ -111,8 +129,10 @@
 #   • Version officially marked as baseline v1.1.
 # -----------------------------------------------------------------------------
 
-import os, json, shutil, time
+import os, json, shutil, time, logging
 from datetime import datetime
+from pathlib import Path
+from typing import List, Optional
 from CB9Lib.colors import *
 from CB9Lib.globals import *
 
@@ -234,6 +254,90 @@ def list_files(path: str, ext: str = None) -> list:
         print(color_text(f"[ERROR] {e}", RED))
         return []
 
+def remove_files(
+    path: str,
+    filelist: Optional[List[str]] = None,
+    dry_run: bool = False,
+    log_deletions: bool = True
+) -> bool:
+    """
+    Deletes files matching patterns in filelist from path recursively.
+
+    Args:
+        path: Root directory to search (absolute or relative)
+        filelist: List of filename patterns to delete (e.g., ['.DS_Store', '*.tmp'])
+        dry_run: If True, only shows what would be deleted without deleting
+        log_deletions: If True, logs deleted files to LOG_DIR
+
+    Returns:
+        True if successful with no errors, False if errors occurred
+    """
+    if filelist is None:
+        filelist = []
+
+    ensure_folder(LOG_DIR)
+
+    # Setup logging if needed
+    if log_deletions:
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        log_file = Path(LOG_DIR) / f"deletions_{timestamp}.log"
+        logging.basicConfig(
+            filename=str(log_file),
+            level=logging.INFO,
+            format='%(asctime)s - %(message)s',
+            force=True
+        )
+
+    try:
+        root_path = Path(path)
+        if not root_path.exists():
+            print(color_text(f"[ERROR] Path does not exist: {path}", RED, style=BOLD))
+            return False
+
+        deleted_count = 0
+        error_count = 0
+
+        for pattern in filelist:
+            # Use rglob for recursive globbing (handles wildcards)
+            for file_path in root_path.rglob(pattern):
+                if file_path.is_file():
+                    try:
+                        if dry_run:
+                            print(color_text(f"[DRY RUN] Would delete: {file_path}", YELLOW))
+                        else:
+                            file_path.unlink()
+                            deleted_count += 1
+                            if log_deletions:
+                                logging.info(f"Deleted: {file_path}")
+                            print(color_text(f"[Deleted] {file_path}", GREEN))
+                    except PermissionError:
+                        error_count += 1
+                        print(color_text(f"[ERROR] Permission denied: {file_path}", RED, style=BOLD))
+                        if log_deletions:
+                            logging.error(f"Permission denied: {file_path}")
+                    except Exception as e:
+                        error_count += 1
+                        print(color_text(f"[ERROR] Failed to delete {file_path}: {e}", RED, style=BOLD))
+                        if log_deletions:
+                            logging.error(f"Failed to delete {file_path}: {e}")
+
+        # Summary
+        if dry_run:
+            print(color_text(f"\n[DRY RUN] Complete. Found {deleted_count} file(s) that would be deleted.", CYAN, style=BOLD))
+        else:
+            print(color_text(f"\n[SUCCESS] Deleted {deleted_count} file(s)", GREEN, style=BOLD))
+
+        if error_count > 0:
+            print(color_text(f"[WARNING] {error_count} error(s) occurred", YELLOW, style=BOLD))
+
+        return error_count == 0
+
+    except Exception as e:
+        print(color_text(f"[ERROR] {e}", RED, style=BOLD))
+        if log_deletions:
+            logging.error(f"Fatal error: {e}")
+        return False
+
 # -----------------------------------------------------------------------------
 # Logging
 # -----------------------------------------------------------------------------
@@ -350,6 +454,533 @@ def logRotate(script_name: str, version: str = "v1.2", old_filename: str = None)
     except Exception as e:
         print(color_text(f"[ERROR] Could not create rotated log: {e}", RED, style=BOLD))
         return None
+
+# -----------------------------------------------------------------------------
+# Interactive UI (v1.3)
+# -----------------------------------------------------------------------------
+def menu(title: str, options: list, allow_back: bool = True, allow_quit: bool = True) -> str:
+    """
+    Display an interactive menu with numbered options.
+
+    Args:
+        title: Menu title to display
+        options: List of menu options (strings or tuples of (key, description))
+        allow_back: Include a 'Back' option (default: True)
+        allow_quit: Include a 'Quit' option (default: True)
+
+    Returns:
+        Selected option key/text, or 'back', 'quit'
+    """
+    print(f"\n{color_text(title, fg=CYAN, style=BOLD)}")
+    print("─" * len(title))
+
+    for i, option in enumerate(options, 1):
+        if isinstance(option, tuple):
+            key, desc = option
+            print(f"  {color_text(str(i), fg=YELLOW)}. {desc}")
+        else:
+            print(f"  {color_text(str(i), fg=YELLOW)}. {option}")
+
+    if allow_back:
+        print(f"  {color_text('B', fg=YELLOW)}. Back")
+    if allow_quit:
+        print(f"  {color_text('Q', fg=YELLOW)}. Quit")
+
+    while True:
+        choice = input(f"\n{color_text('Select option:', fg=CYAN)} ").strip().lower()
+
+        if choice.isdigit() and 1 <= int(choice) <= len(options):
+            return choice
+        elif allow_back and choice == 'b':
+            return 'back'
+        elif allow_quit and choice == 'q':
+            return 'quit'
+        else:
+            print(color_text("Invalid choice. Please try again.", fg=RED))
+
+
+def select_list(title: str, items: list, multi: bool = False, selected: list = None) -> list:
+    """
+    Interactive item selection with number input.
+
+    Args:
+        title: Selection prompt
+        items: List of items to choose from
+        multi: Allow multiple selections (default: False)
+        selected: Pre-selected items (default: None)
+
+    Returns:
+        List of selected items
+    """
+    if selected is None:
+        selected = []
+
+    print(f"\n{color_text(title, fg=CYAN, style=BOLD)}")
+
+    if multi:
+        print(color_text("(Enter numbers separated by commas, or 'all')", fg=YELLOW))
+
+    for i, item in enumerate(items, 1):
+        marker = "✓" if item in selected else " "
+        print(f"  [{marker}] {i}. {item}")
+
+    if multi:
+        choices = input(f"\n{color_text('Select (1,2,3 or all):', fg=CYAN)} ").strip().lower()
+
+        if choices == 'all':
+            return items.copy()
+
+        result = []
+        for choice in choices.split(','):
+            choice = choice.strip()
+            if choice.isdigit():
+                idx = int(choice) - 1
+                if 0 <= idx < len(items):
+                    result.append(items[idx])
+        return result
+    else:
+        choice = input(f"\n{color_text('Select one:', fg=CYAN)} ").strip()
+        if choice.isdigit():
+            idx = int(choice) - 1
+            if 0 <= idx < len(items):
+                return [items[idx]]
+        return []
+
+
+def progress_bar(current: int, total: int, width: int = 50, label: str = "", show_percent: bool = True) -> None:
+    """
+    Display a progress bar in the terminal.
+
+    Args:
+        current: Current progress value
+        total: Total/maximum value
+        width: Width of the progress bar in characters (default: 50)
+        label: Optional label to show before the bar
+        show_percent: Show percentage (default: True)
+    """
+    import sys
+
+    percent = (current / total) * 100 if total > 0 else 0
+    filled = int(width * current / total) if total > 0 else 0
+
+    bar = "█" * filled + "░" * (width - filled)
+    bar_colored = color_text(bar, fg=GREEN, style=BOLD)
+
+    output = f"\r{label} " if label else "\r"
+    output += f"[{bar_colored}]"
+
+    if show_percent:
+        output += f" {percent:.1f}%"
+
+    output += f" ({current}/{total})"
+
+    sys.stdout.write(output)
+    sys.stdout.flush()
+
+    if current >= total:
+        sys.stdout.write("\n")
+
+
+def confirm(prompt: str, default: bool = True) -> bool:
+    """
+    Ask for yes/no confirmation.
+
+    Args:
+        prompt: Question to ask
+        default: Default answer if user just presses Enter
+
+    Returns:
+        True for yes, False for no
+    """
+    suffix = " [Y/n]: " if default else " [y/N]: "
+
+    while True:
+        response = input(color_text(prompt + suffix, fg=YELLOW)).strip().lower()
+
+        if response == '':
+            return default
+        elif response in ('y', 'yes'):
+            return True
+        elif response in ('n', 'no'):
+            return False
+        else:
+            print("Please answer 'y' or 'n'")
+
+
+# -----------------------------------------------------------------------------
+# Table Formatting (v1.3)
+# -----------------------------------------------------------------------------
+def print_table(headers: list, rows: list, align: list = None, border: bool = True) -> None:
+    """
+    Print a formatted table to the console.
+
+    Args:
+        headers: List of column headers
+        rows: List of lists (each inner list is a row)
+        align: List of alignment ('left', 'right', 'center') per column
+        border: Show border lines (default: True)
+    """
+    if align is None:
+        align = ['left'] * len(headers)
+
+    # Calculate column widths
+    col_widths = [len(str(h)) for h in headers]
+    for row in rows:
+        for i, cell in enumerate(row):
+            if i < len(col_widths):
+                col_widths[i] = max(col_widths[i], len(str(cell)))
+
+    # Print header
+    header_parts = []
+    for i, header_text in enumerate(headers):
+        width = col_widths[i]
+        if align[i] == 'right':
+            header_parts.append(str(header_text).rjust(width))
+        elif align[i] == 'center':
+            header_parts.append(str(header_text).center(width))
+        else:
+            header_parts.append(str(header_text).ljust(width))
+
+    separator = "─" * (sum(col_widths) + len(headers) * 3 - 1)
+
+    if border:
+        print("┌" + separator + "┐")
+
+    print("│ " + color_text(" │ ".join(header_parts), fg=CYAN, style=BOLD) + " │")
+
+    if border:
+        print("├" + separator + "┤")
+    else:
+        print("  " + "─" * (sum(col_widths) + len(headers) * 3 - 3))
+
+    # Print rows
+    for row in rows:
+        row_parts = []
+        for i, cell in enumerate(row):
+            if i < len(col_widths):
+                width = col_widths[i]
+                if align[i] == 'right':
+                    row_parts.append(str(cell).rjust(width))
+                elif align[i] == 'center':
+                    row_parts.append(str(cell).center(width))
+                else:
+                    row_parts.append(str(cell).ljust(width))
+
+        print("│ " + " │ ".join(row_parts) + " │")
+
+    if border:
+        print("└" + separator + "┘")
+
+
+def table_format(headers: list, rows: list, align: list = None) -> str:
+    """
+    Return a formatted table as a string (for logging or saving).
+
+    Returns:
+        Formatted table string
+    """
+    if align is None:
+        align = ['left'] * len(headers)
+
+    lines = []
+
+    # Calculate column widths
+    col_widths = [len(str(h)) for h in headers]
+    for row in rows:
+        for i, cell in enumerate(row):
+            if i < len(col_widths):
+                col_widths[i] = max(col_widths[i], len(str(cell)))
+
+    # Build header
+    header_parts = []
+    for i, header_text in enumerate(headers):
+        width = col_widths[i]
+        if align[i] == 'right':
+            header_parts.append(str(header_text).rjust(width))
+        elif align[i] == 'center':
+            header_parts.append(str(header_text).center(width))
+        else:
+            header_parts.append(str(header_text).ljust(width))
+
+    lines.append(" | ".join(header_parts))
+    lines.append("-" * (sum(col_widths) + len(headers) * 3 - 1))
+
+    # Build rows
+    for row in rows:
+        row_parts = []
+        for i, cell in enumerate(row):
+            if i < len(col_widths):
+                width = col_widths[i]
+                if align[i] == 'right':
+                    row_parts.append(str(cell).rjust(width))
+                elif align[i] == 'center':
+                    row_parts.append(str(cell).center(width))
+                else:
+                    row_parts.append(str(cell).ljust(width))
+        lines.append(" | ".join(row_parts))
+
+    return "\n".join(lines)
+
+
+def print_dict_table(dict_list: list, keys: list = None) -> None:
+    """
+    Print a table from a list of dictionaries.
+
+    Args:
+        dict_list: List of dictionaries with same keys
+        keys: Specific keys to display (None = all keys)
+    """
+    if not dict_list:
+        return
+
+    if keys is None:
+        keys = list(dict_list[0].keys())
+
+    headers = [k.upper() for k in keys]
+    rows = [[str(d.get(k, "")) for k in keys] for d in dict_list]
+
+    print_table(headers, rows)
+
+
+# -----------------------------------------------------------------------------
+# Advanced Logging System (v1.3)
+# -----------------------------------------------------------------------------
+# Log level constants
+DEBUG = 10
+INFO = 20
+WARNING = 30
+ERROR = 40
+CRITICAL = 50
+
+_LOG_LEVELS = {
+    DEBUG: "DEBUG",
+    INFO: "INFO",
+    WARNING: "WARNING",
+    ERROR: "ERROR",
+    CRITICAL: "CRITICAL"
+}
+
+
+class Logger:
+    """
+    Advanced logger with level filtering.
+    """
+
+    def __init__(self, name: str, level: int = INFO, filename: str = None,
+                 console: bool = True, colored: bool = True):
+        """
+        Initialize logger.
+
+        Args:
+            name: Logger name (usually script/module name)
+            level: Minimum log level to display (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+            filename: Optional log file path
+            console: Print to console (default: True)
+            colored: Use colors in console output (default: True)
+        """
+        self.name = name
+        self.level = level
+        self.filename = filename
+        self.console = console
+        self.colored = colored
+
+    def _log(self, level: int, message: str) -> None:
+        """Internal logging method."""
+        if level < self.level:
+            return
+
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        level_name = _LOG_LEVELS.get(level, "UNKNOWN")
+        log_line = f"[{timestamp}] [{level_name:8s}] [{self.name}] {message}"
+
+        # Console output with colors
+        if self.console:
+            if self.colored:
+                colors_map = {
+                    DEBUG: CYAN,
+                    INFO: RESET,
+                    WARNING: YELLOW,
+                    ERROR: RED,
+                    CRITICAL: BRIGHT_RED
+                }
+                colored_line = (f"[{timestamp}] "
+                               f"[{color_text(level_name, fg=colors_map.get(level, RESET))}] "
+                               f"[{self.name}] {message}")
+                print(colored_line)
+            else:
+                print(log_line)
+
+        # File output
+        if self.filename:
+            Path(self.filename).parent.mkdir(parents=True, exist_ok=True)
+            with open(self.filename, 'a', encoding='utf-8') as f:
+                f.write(log_line + "\n")
+
+    def debug(self, message: str) -> None:
+        """Log debug message."""
+        self._log(DEBUG, message)
+
+    def info(self, message: str) -> None:
+        """Log info message."""
+        self._log(INFO, message)
+
+    def warning(self, message: str) -> None:
+        """Log warning message."""
+        self._log(WARNING, message)
+
+    def error(self, message: str) -> None:
+        """Log error message."""
+        self._log(ERROR, message)
+
+    def critical(self, message: str) -> None:
+        """Log critical message."""
+        self._log(CRITICAL, message)
+
+    def set_level(self, level: int) -> None:
+        """Change the log level."""
+        self.level = level
+
+
+def get_logger(name: str, level: int = INFO, filename: str = None) -> Logger:
+    """
+    Create and return a Logger instance.
+
+    Args:
+        name: Logger name
+        level: Minimum log level
+        filename: Optional log file
+
+    Returns:
+        Logger instance
+    """
+    return Logger(name, level, filename)
+
+
+# -----------------------------------------------------------------------------
+# Advanced File Utilities (v1.3)
+# -----------------------------------------------------------------------------
+def copy_file(src: str, dst: str, overwrite: bool = False) -> bool:
+    """
+    Copy a file from source to destination.
+
+    Args:
+        src: Source file path
+        dst: Destination file path
+        overwrite: Allow overwriting existing file (default: False)
+
+    Returns:
+        True if successful, False otherwise
+    """
+    try:
+        src_path = Path(src)
+        dst_path = Path(dst)
+
+        if not src_path.exists():
+            print(color_text(f"[ERROR] Source file not found: {src}", RED, style=BOLD))
+            return False
+
+        if dst_path.exists() and not overwrite:
+            print(color_text(f"[ERROR] Destination exists (use overwrite=True): {dst}", RED, style=BOLD))
+            return False
+
+        shutil.copy2(src, dst)
+        print(color_text(f"[Copied] {src} → {dst}", GREEN))
+        return True
+    except Exception as e:
+        print(color_text(f"[ERROR] Failed to copy: {e}", RED, style=BOLD))
+        return False
+
+
+def move_file(src: str, dst: str) -> bool:
+    """
+    Move a file from source to destination.
+
+    Args:
+        src: Source file path
+        dst: Destination file path
+
+    Returns:
+        True if successful, False otherwise
+    """
+    try:
+        src_path = Path(src)
+
+        if not src_path.exists():
+            print(color_text(f"[ERROR] Source file not found: {src}", RED, style=BOLD))
+            return False
+
+        shutil.move(src, dst)
+        print(color_text(f"[Moved] {src} → {dst}", GREEN))
+        return True
+    except Exception as e:
+        print(color_text(f"[ERROR] Failed to move: {e}", RED, style=BOLD))
+        return False
+
+
+def search_files(path: str, pattern: str, recursive: bool = True) -> list:
+    """
+    Search for files matching a pattern.
+
+    Args:
+        path: Directory to search
+        pattern: Glob pattern (e.g., "*.py", "backup_*")
+        recursive: Search subdirectories (default: True)
+
+    Returns:
+        List of matching file paths
+    """
+    try:
+        search_path = Path(path)
+        if not search_path.exists():
+            print(color_text(f"[ERROR] Path not found: {path}", RED, style=BOLD))
+            return []
+
+        if recursive:
+            matches = list(search_path.rglob(pattern))
+        else:
+            matches = list(search_path.glob(pattern))
+
+        # Return only files, not directories
+        return [str(m) for m in matches if m.is_file()]
+    except Exception as e:
+        print(color_text(f"[ERROR] Search failed: {e}", RED, style=BOLD))
+        return []
+
+
+def get_file_info(path: str) -> dict:
+    """
+    Get detailed information about a file.
+
+    Args:
+        path: File path
+
+    Returns:
+        Dictionary with file info (size, modified, created, etc.)
+    """
+    try:
+        file_path = Path(path)
+
+        if not file_path.exists():
+            print(color_text(f"[ERROR] File not found: {path}", RED, style=BOLD))
+            return {}
+
+        stat = file_path.stat()
+
+        return {
+            'path': str(file_path.absolute()),
+            'name': file_path.name,
+            'size_bytes': stat.st_size,
+            'size_mb': round(stat.st_size / (1024 * 1024), 2),
+            'modified': datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d %H:%M:%S"),
+            'created': datetime.fromtimestamp(stat.st_ctime).strftime("%Y-%m-%d %H:%M:%S"),
+            'is_file': file_path.is_file(),
+            'is_dir': file_path.is_dir(),
+            'extension': file_path.suffix
+        }
+    except Exception as e:
+        print(color_text(f"[ERROR] Failed to get file info: {e}", RED, style=BOLD))
+        return {}
+
 
 # -----------------------------------------------------------------------------
 # Debug/Test

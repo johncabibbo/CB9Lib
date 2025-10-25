@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CB9Lib v1.3.0 - Complete API Reference</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00bcd4;
+            --secondary: #e91e63;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --error: #f44336;
+            --bg: #ffffff;
+            --text: #212121;
+            --text-muted: #757575;
+            --border: #e0e0e0;
+            --code-bg: #f5f5f5;
+            --sidebar-bg: #fafafa;
+            --nav-hover: #e3f2fd;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #1e1e1e;
+                --text: #e0e0e0;
+                --text-muted: #b0b0b0;
+                --border: #404040;
+                --code-bg: #2d2d2d;
+                --sidebar-bg: #252525;
+                --nav-hover: #2a4858;
+            }
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+        }
+
+        .container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 20px;
+            top: 0;
+            left: 0;
+        }
+
+        .sidebar-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .sidebar-header h1 {
+            font-size: 24px;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .sidebar-header p {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .nav-section {
+            margin-bottom: 25px;
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-bottom: 5px;
+        }
+
+        .nav-links a {
+            display: block;
+            padding: 8px 12px;
+            color: var(--text);
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .nav-links a:hover {
+            background: var(--nav-hover);
+            color: var(--primary);
+            padding-left: 16px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 40px 60px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .content-header {
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .content-header h1 {
+            font-size: 42px;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .content-header p {
+            font-size: 18px;
+            color: var(--text-muted);
+        }
+
+        /* Sections */
+        section {
+            margin-bottom: 50px;
+            scroll-margin-top: 20px;
+        }
+
+        h2 {
+            font-size: 32px;
+            margin: 40px 0 20px 0;
+            color: var(--primary);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            font-size: 24px;
+            margin: 30px 0 15px 0;
+            color: var(--text);
+        }
+
+        h4 {
+            font-size: 18px;
+            margin: 25px 0 15px 0;
+            color: var(--text);
+            font-family: 'Courier New', monospace;
+            background: var(--code-bg);
+            padding: 12px 16px;
+            border-radius: 6px;
+            border-left: 4px solid var(--primary);
+        }
+
+        h5 {
+            font-size: 16px;
+            margin: 20px 0 10px 0;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        p {
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+
+        /* Code Blocks */
+        pre {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        code {
+            font-family: 'Courier New', Consolas, Monaco, monospace;
+            background: var(--code-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+        }
+
+        /* Lists */
+        ul, ol {
+            margin: 15px 0 15px 30px;
+        }
+
+        ul li, ol li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        /* Parameter Lists */
+        .param-list {
+            list-style: none;
+            margin: 15px 0;
+        }
+
+        .param-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .param-list li:before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+        }
+
+        .param-list code {
+            color: var(--secondary);
+            font-weight: 600;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: var(--bg);
+        }
+
+        table th {
+            background: var(--code-bg);
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid var(--border);
+        }
+
+        table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        table tr:hover {
+            background: var(--sidebar-bg);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .badge-new {
+            background: var(--success);
+            color: white;
+        }
+
+        .badge-class {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .badge-deprecated {
+            background: var(--warning);
+            color: white;
+        }
+
+        /* Horizontal Rules */
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 30px 0;
+        }
+
+        /* Back to Top */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 24px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .back-to-top:hover {
+            background: var(--secondary);
+            transform: translateY(-5px);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+                z-index: 1000;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px 30px;
+            }
+
+            .menu-toggle {
+                display: block;
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 1001;
+                background: var(--primary);
+                color: white;
+                width: 40px;
+                height: 40px;
+                border-radius: 8px;
+                border: none;
+                font-size: 20px;
+                cursor: pointer;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .menu-toggle {
+                display: none;
+            }
+        }
+
+        /* Search Box */
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Highlight for search results */
+        .highlight {
+            background: yellow;
+            color: black;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        /* Emoji support */
+        .emoji {
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1>CB9Lib</h1>
+                <p>Version 1.3.0</p>
+            </div>
+
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search functions..." onkeyup="searchFunctions()">
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Modules</div>
+                <ul class="nav-links">
+                    <li><a href="#colors">colors.py</a></li>
+                    <li><a href="#func">func.py</a></li>
+                    <li><a href="#globals">globals.py</a></li>
+                    <li><a href="#imgvid">imgvid.py</a></li>
+                    <li><a href="#args">args.py</a></li>
+                    <li><a href="#validators">validators.py</a></li>
+                    <li><a href="#testing">testing.py</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Quick Links</div>
+                <ul class="nav-links">
+                    <li><a href="#import-guide">Import Guide</a></li>
+                    <li><a href="#example">Complete Example</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1>CB9Lib v1.3.0 <span class="emoji">📚</span></h1>
+                <p>Complete API Reference - Quick reference guide for all functions, classes, and constants</p>
+            </div>
+
+            <!-- colors.py -->
+            <section id="colors">
+                <h2>colors.py</h2>
+                <p><strong>Terminal Colors, Styles, and Themes</strong></p>
+
+                <h3>Color Constants</h3>
+
+                <h4>Standard Colors (Foreground)</h4>
+                <pre><code>BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE</code></pre>
+
+                <h4>Bright Colors (Foreground)</h4>
+                <pre><code>BRIGHT_BLACK, BRIGHT_RED, BRIGHT_GREEN, BRIGHT_YELLOW
+BRIGHT_BLUE, BRIGHT_MAGENTA, BRIGHT_CYAN, BRIGHT_WHITE</code></pre>
+
+                <h4>Background Colors</h4>
+                <pre><code>BG_BLACK, BG_RED, BG_GREEN, BG_YELLOW
+BG_BLUE, BG_MAGENTA, BG_CYAN, BG_WHITE</code></pre>
+
+                <h4>Bright Background Colors</h4>
+                <pre><code>BG_BRIGHT_BLACK, BG_BRIGHT_RED, BG_BRIGHT_GREEN, BG_BRIGHT_YELLOW
+BG_BRIGHT_BLUE, BG_BRIGHT_MAGENTA, BG_BRIGHT_CYAN, BG_BRIGHT_WHITE</code></pre>
+
+                <h4>Style Modifiers</h4>
+                <pre><code>BOLD, DIM, ITALIC, UNDERLINE, BLINK, INVERSE, HIDDEN, STRIKE, RESET</code></pre>
+
+                <hr>
+
+                <h3>Functions</h3>
+
+                <h4>color_text(text, fg="", bg="", style="") → str</h4>
+                <p>Apply color and style to text.</p>
+                <p><strong>Parameters:</strong></p>
+                <ul class="param-list">
+                    <li><code>text</code> (str): Text to colorize</li>
+                    <li><code>fg</code> (str): Foreground color (e.g., RED, GREEN, CYAN)</li>
+                    <li><code>bg</code> (str): Background color (e.g., BG_BLACK, BG_BLUE)</li>
+                    <li><code>style</code> (str): Style modifier (e.g., BOLD, ITALIC, UNDERLINE)</li>
+                </ul>
+                <p><strong>Returns:</strong> Formatted string with ANSI codes</p>
+                <p><strong>Example:</strong></p>
+                <pre><code>from CB9Lib import color_text, RED, GREEN, BOLD
+
+print(color_text("Error!", fg=RED, style=BOLD))
+print(color_text("Success", fg=GREEN))
+print(color_text("Warning", fg=YELLOW, bg=BG_BLACK))</code></pre>
+
+                <hr>
+
+                <h4>banner(text, fg=CYAN, style=BOLD)</h4>
+                <p>Print a centered banner with borders.</p>
+                <p><strong>Parameters:</strong></p>
+                <ul class="param-list">
+                    <li><code>text</code> (str): Banner text</li>
+                    <li><code>fg</code> (str): Foreground color (default: CYAN)</li>
+                    <li><code>style</code> (str): Style modifier (default: BOLD)</li>
+                </ul>
+                <p><strong>Example:</strong></p>
+                <pre><code>from CB9Lib import banner
+
+banner("Welcome to My App")</code></pre>
+
+                <hr>
+
+                <h4>enable_colors(state=True)</h4>
+                <p>Manually enable or disable color output.</p>
+                <p><strong>Parameters:</strong></p>
+                <ul class="param-list">
+                    <li><code>state</code> (bool): True to enable, False to disable</li>
+                </ul>
+                <p><strong>Example:</strong></p>
+                <pre><code>from CB9Lib import enable_colors, color_text, RED
+
+enable_colors(False)  # Disable colors
+print(color_text("No color", fg=RED))
+
+enable_colors(True)   # Re-enable
+print(color_text("With color!", fg=RED))</code></pre>
+
+                <h3>Color Themes <span class="badge badge-new">v1.3</span></h3>
+
+                <h4>Theme Constants</h4>
+                <pre><code>THEME_DEFAULT   # Cyan/Magenta theme
+THEME_OCEAN     # Blue/Cyan ocean theme
+THEME_FOREST    # Green/Cyan forest theme
+THEME_SUNSET    # Magenta/Yellow sunset theme
+THEME_MONO      # Monochrome theme</code></pre>
+
+                <p>Each theme has these keys:</p>
+                <ul>
+                    <li><code>primary</code> - Primary accent color</li>
+                    <li><code>secondary</code> - Secondary accent color</li>
+                    <li><code>success</code> - Success/OK color</li>
+                    <li><code>warning</code> - Warning color</li>
+                    <li><code>error</code> - Error color</li>
+                    <li><code>info</code> - Information color</li>
+                    <li><code>highlight</code> - Highlight color</li>
+                    <li><code>muted</code> - Muted/dim color</li>
+                </ul>
+
+                <h4>apply_theme(theme)</h4>
+                <p>Apply a color theme.</p>
+                <p><strong>Parameters:</strong></p>
+                <ul class="param-list">
+                    <li><code>theme</code> (dict): Theme dictionary (e.g., THEME_OCEAN)</li>
+                </ul>
+                <p><strong>Example:</strong></p>
+                <pre><code>from CB9Lib import apply_theme, THEME_OCEAN, get_theme_color, color_text
+
+apply_theme(THEME_OCEAN)
+print(color_text("Success!", fg=get_theme_color('success')))
+print(color_text("Warning!", fg=get_theme_color('warning')))</code></pre>
+
+                <h4>get_theme_color(key) → str</h4>
+                <p>Get a color from the active theme.</p>
+                <p><strong>Parameters:</strong></p>
+                <ul class="param-list">
+                    <li><code>key</code> (str): Theme key (primary, secondary, success, warning, error, info, highlight, muted)</li>
+                </ul>
+                <p><strong>Returns:</strong> ANSI color code</p>
+            </section>
+
+            <!-- func.py -->
+            <section id="func">
+                <h2>func.py</h2>
+                <p><strong>Core Utilities, UI Components, Tables, Logging, and File Operations</strong></p>
+
+                <h3>Core Utilities</h3>
+
+                <h4>clear_screen()</h4>
+                <p>Clear the terminal screen (cross-platform).</p>
+                <p><strong>Example:</strong></p>
+                <pre><code>from CB9Lib import clear_screen
+
+clear_screen()</code></pre>
+
+                <h4>pause(msg="Press Enter to continue...")</h4>
+                <p>Pause execution and wait for user to press Enter.</p>
+                <p><strong>Parameters:</strong></p>
+                <ul class="param-list">
+                    <li><code>msg</code> (str): Message to display</li>
+                </ul>
+
+                <h4>sleep(seconds=1.0)</h4>
+                <p>Wait for N seconds with visual indicator.</p>
+                <p><strong>Parameters:</strong></p>
+                <ul class="param-list">
+                    <li><code>seconds</code> (float): Number of seconds to wait</li>
+                </ul>
+
+                <h3>Interactive UI <span class="badge badge-new">v1.3</span></h3>
+
+                <h4>menu(title, options, allow_back=True, allow_quit=True) → str</h4>
+                <p>Display an interactive menu with numbered options.</p>
+                <p><strong>Parameters:</strong></p>
+                <ul class="param-list">
+                    <li><code>title</code> (str): Menu title</li>
+                    <li><code>options</code> (list): List of menu options (strings)</li>
+                    <li><code>allow_back</code> (bool): Include 'Back' option (default: True)</li>
+                    <li><code>allow_quit</code> (bool): Include 'Quit' option (default: True)</li>
+                </ul>
+                <p><strong>Returns:</strong> User's choice ('1', '2', 'back', 'quit')</p>
+                <p><strong>Example:</strong></p>
+                <pre><code>from CB9Lib import menu
+
+choice = menu("Main Menu", [
+    "Full Backup",
+    "Incremental Backup",
+    "Restore",
+    "Settings"
+])
+
+if choice == '1':
+    print("Starting full backup...")
+elif choice == 'quit':
+    print("Exiting...")</code></pre>
+
+                <h4>select_list(title, items, multi=False, selected=None) → list</h4>
+                <p>Interactive item selection with number input.</p>
+                <p><strong>Parameters:</strong></p>
+                <ul class="param-list">
+                    <li><code>title</code> (str): Selection prompt</li>
+                    <li><code>items</code> (list): List of items to choose from</li>
+                    <li><code>multi</code> (bool): Allow multiple selections (default: False)</li>
+                    <li><code>selected</code> (list): Pre-selected items (default: None)</li>
+                </ul>
+                <p><strong>Returns:</strong> List of selected items</p>
+
+                <h4>progress_bar(current, total, width=50, label="", show_percent=True)</h4>
+                <p>Display a progress bar in the terminal.</p>
+                <p><strong>Parameters:</strong></p>
+                <ul class="param-list">
+                    <li><code>current</code> (int): Current progress value</li>
+                    <li><code>total</code> (int): Total/maximum value</li>
+                    <li><code>width</code> (int): Bar width in characters (default: 50)</li>
+                    <li><code>label</code> (str): Optional label before the bar</li>
+                    <li><code>show_percent</code> (bool): Show percentage (default: True)</li>
+                </ul>
+                <p><strong>Example:</strong></p>
+                <pre><code>from CB9Lib import progress_bar
+import time
+
+for i in range(1, 101):
+    progress_bar(i, 100, label="Processing files", width=50)
+    time.sleep(0.05)  # Simulate work</code></pre>
+
+                <h4>confirm(prompt, default=True) → bool</h4>
+                <p>Ask for yes/no confirmation.</p>
+                <p><strong>Parameters:</strong></p>
+                <ul class="param-list">
+                    <li><code>prompt</code> (str): Question to ask</li>
+                    <li><code>default</code> (bool): Default answer if Enter pressed</li>
+                </ul>
+                <p><strong>Returns:</strong> True for yes, False for no</p>
+
+                <h3>Table Formatting <span class="badge badge-new">v1.3</span></h3>
+
+                <h4>print_table(headers, rows, align=None, border=True)</h4>
+                <p>Print a formatted table to the console.</p>
+                <p><strong>Parameters:</strong></p>
+                <ul class="param-list">
+                    <li><code>headers</code> (list): List of column headers</li>
+                    <li><code>rows</code> (list): List of lists (each inner list is a row)</li>
+                    <li><code>align</code> (list): List of alignment per column ('left', 'right', 'center')</li>
+                    <li><code>border</code> (bool): Show border lines (default: True)</li>
+                </ul>
+                <p><strong>Example:</strong></p>
+                <pre><code>from CB9Lib import print_table
+
+headers = ["Snapshot ID", "Size", "Status", "Date"]
+rows = [
+    ["snap-001", "8.5 GB", "Complete", "2024-10-20"],
+    ["snap-002", "8.7 GB", "Complete", "2024-10-21"]
+]
+print_table(headers, rows, align=['left', 'right', 'center', 'left'])</code></pre>
+
+                <h4>print_dict_table(dict_list, keys=None)</h4>
+                <p>Print a table from a list of dictionaries.</p>
+                <p><strong>Parameters:</strong></p>
+                <ul class="param-list">
+                    <li><code>dict_list</code> (list): List of dictionaries</li>
+                    <li><code>keys</code> (list): Specific keys to display (None = all keys)</li>
+                </ul>
+
+                <h3>Advanced Logging <span class="badge badge-new">v1.3</span></h3>
+
+                <h4>Logger <span class="badge badge-class">Class</span></h4>
+                <p>Advanced logger with level filtering.</p>
+                <p><strong>Constructor:</strong></p>
+                <pre><code>Logger(name, level=INFO, filename=None, console=True, colored=True)</code></pre>
+                <p><strong>Methods:</strong></p>
+                <ul class="param-list">
+                    <li><code>logger.debug(message)</code> - Log debug message</li>
+                    <li><code>logger.info(message)</code> - Log info message</li>
+                    <li><code>logger.warning(message)</code> - Log warning message</li>
+                    <li><code>logger.error(message)</code> - Log error message</li>
+                    <li><code>logger.critical(message)</code> - Log critical message</li>
+                    <li><code>logger.set_level(level)</code> - Change log level dynamically</li>
+                </ul>
+                <p><strong>Log Level Constants:</strong></p>
+                <pre><code>DEBUG = 10      # Detailed debugging information
+INFO = 20       # General informational messages
+WARNING = 30    # Warning messages
+ERROR = 40      # Error messages
+CRITICAL = 50   # Critical errors</code></pre>
+                <p><strong>Example:</strong></p>
+                <pre><code>from CB9Lib import Logger, INFO, DEBUG
+
+log = Logger("MyApp", level=INFO, filename="app.log")
+
+log.debug("This won't show (below INFO level)")
+log.info("Application started")
+log.warning("Low disk space: 10%")
+log.error("Failed to connect to database")
+
+# Change level
+log.set_level(DEBUG)
+log.debug("Now debug messages appear")</code></pre>
+
+                <h4>get_logger(name, level=INFO, filename=None) → Logger</h4>
+                <p>Create and return a Logger instance (convenience function).</p>
+                <p><strong>Parameters:</strong></p>
+                <ul class="param-list">
+                    <li><code>name</code> (str): Logger name</li>
+                    <li><code>level</code> (int): Minimum log level</li>
+                    <li><code>filename</code> (str): Optional log file</li>
+                </ul>
+
+                <h3>File Utilities</h3>
+
+                <h4>file_exists(path) → bool</h4>
+                <p>Check if a file exists.</p>
+
+                <h4>folder_exists(path) → bool</h4>
+                <p>Check if a directory exists.</p>
+
+                <h4>ensure_folder(path)</h4>
+                <p>Create directory if it doesn't exist.</p>
+
+                <h4>copy_file(src, dst, overwrite=False) → bool <span class="badge badge-new">v1.3</span></h4>
+                <p>Copy a file from source to destination.</p>
+
+                <h4>move_file(src, dst) → bool <span class="badge badge-new">v1.3</span></h4>
+                <p>Move a file from source to destination.</p>
+
+                <h4>search_files(path, pattern, recursive=True) → list <span class="badge badge-new">v1.3</span></h4>
+                <p>Search for files matching a pattern.</p>
+                <p><strong>Example:</strong></p>
+                <pre><code>from CB9Lib import search_files
+
+# Find all Python files recursively
+python_files = search_files("/project", "*.py", recursive=True)
+print(f"Found {len(python_files)} Python files")</code></pre>
+
+                <h4>get_file_info(path) → dict <span class="badge badge-new">v1.3</span></h4>
+                <p>Get detailed information about a file.</p>
+                <p><strong>Returns:</strong> Dictionary with file info (path, name, size_bytes, size_mb, modified, created, is_file, is_dir, extension)</p>
+            </section>
+
+            <!-- globals.py -->
+            <section id="globals">
+                <h2>globals.py</h2>
+                <p><strong>Global Settings, Paths, and Constants</strong></p>
+
+                <h3>Global Path Constants</h3>
+                <pre><code>ROOT_DIR   # ~/Documents/script
+LOG_DIR    # ~/Documents/logs
+TEMP_DIR   # ~/Documents/script/temp</code></pre>
+
+                <h4>get_timestamp() → str</h4>
+                <p>Returns current timestamp in "YYYY-MM-DD_HH-MM-SS" format.</p>
+                <p><strong>Example:</strong></p>
+                <pre><code>from CB9Lib import get_timestamp
+
+timestamp = get_timestamp()  # "2024-10-25_14-30-45"
+filename = f"backup_{timestamp}.tar"</code></pre>
+            </section>
+
+            <!-- imgvid.py -->
+            <section id="imgvid">
+                <h2>imgvid.py</h2>
+                <p><strong>Image and Video Utilities</strong></p>
+
+                <h4>create_thumb_resize(src_path, max_width=150, max_height=150, suffix="_tmb") → str|bool</h4>
+                <p>Create a thumbnail from an image.</p>
+                <p><strong>Parameters:</strong></p>
+                <ul class="param-list">
+                    <li><code>src_path</code> (str): Path to source image</li>
+                    <li><code>max_width</code> (int): Maximum thumbnail width (default: 150)</li>
+                    <li><code>max_height</code> (int): Maximum thumbnail height (default: 150)</li>
+                    <li><code>suffix</code> (str): Filename suffix (default: "_tmb")</li>
+                </ul>
+                <p><strong>Requirements:</strong> Pillow library (<code>pip install Pillow</code>)</p>
+
+                <h4>list_thumbnails(image_directory) → list</h4>
+                <p>Find all thumbnail files in a directory.</p>
+            </section>
+
+            <!-- args.py -->
+            <section id="args">
+                <h2>args.py <span class="badge badge-new">v1.3</span></h2>
+                <p><strong>Command-Line Argument Parsing</strong></p>
+
+                <h4>parse_simple_args(expected_args=None) → dict</h4>
+                <p>Simple argument parser for scripts.</p>
+                <p><strong>Example:</strong></p>
+                <pre><code>from CB9Lib.args import parse_simple_args
+
+# Script called as: python script.py db1 db2 --dry-run
+args = parse_simple_args(['database', 'target'])
+# Returns: {'database': 'db1', 'target': 'db2', 'dry_run': True}</code></pre>
+
+                <h4>CB9ArgParser <span class="badge badge-class">Class</span></h4>
+                <p>Enhanced argument parser with CB9Lib styling.</p>
+                <p><strong>Example:</strong></p>
+                <pre><code>from CB9Lib.args import CB9ArgParser
+
+parser = CB9ArgParser("Backup Manager", "v2.0")
+parser.add_argument('database', help='Database name')
+parser.add_argument('--compress', action='store_true')
+args = parser.parse()</code></pre>
+            </section>
+
+            <!-- validators.py -->
+            <section id="validators">
+                <h2>validators.py <span class="badge badge-new">v1.3</span></h2>
+                <p><strong>Input Validation Utilities</strong></p>
+
+                <h4>is_valid_email(email) → bool</h4>
+                <p>Validate email address format.</p>
+
+                <h4>is_valid_number(value, min_val=None, max_val=None) → bool</h4>
+                <p>Validate number and optional range.</p>
+
+                <h4>is_valid_integer(value, min_val=None, max_val=None) → bool</h4>
+                <p>Validate integer and optional range.</p>
+
+                <h4>is_valid_path(path, must_exist=False, must_be_file=False, must_be_dir=False) → bool</h4>
+                <p>Validate file/directory path.</p>
+
+                <h4>is_valid_ip(ip, version=4) → bool</h4>
+                <p>Validate IP address (IPv4 or IPv6).</p>
+
+                <h4>validate_input(prompt, validator, error_msg="", max_attempts=3) → str|None</h4>
+                <p>Prompt for input with validation.</p>
+                <p><strong>Example:</strong></p>
+                <pre><code>from CB9Lib.validators import validate_input, is_valid_email
+
+email = validate_input(
+    "Enter email:",
+    is_valid_email,
+    "Invalid email format"
+)</code></pre>
+
+                <h4>validate_choice(prompt, valid_choices, case_sensitive=False) → str|None</h4>
+                <p>Prompt for input from a list of valid choices.</p>
+            </section>
+
+            <!-- testing.py -->
+            <section id="testing">
+                <h2>testing.py <span class="badge badge-new">v1.3</span></h2>
+                <p><strong>Testing Framework Utilities</strong></p>
+
+                <h4>assert_equals(actual, expected, msg="") → bool</h4>
+                <p>Simple equality assertion.</p>
+
+                <h4>assert_true(condition, msg="") → bool</h4>
+                <p>Assert that condition is True.</p>
+
+                <h4>assert_false(condition, msg="") → bool</h4>
+                <p>Assert that condition is False.</p>
+
+                <h4>test_suite(name) <em>Context Manager</em></h4>
+                <p>Group tests together with automatic reporting.</p>
+                <p><strong>Example:</strong></p>
+                <pre><code>from CB9Lib.testing import test_suite, assert_equals
+
+with test_suite("Math Operations"):
+    assert_equals(2 + 2, 4, "Addition test")
+    assert_equals(5 * 5, 25, "Multiplication test")</code></pre>
+
+                <h4>mock_input(values) <em>Context Manager</em></h4>
+                <p>Mock user input for testing.</p>
+
+                <h4>capture_output() <em>Context Manager</em></h4>
+                <p>Capture print statements for testing.</p>
+            </section>
+
+            <!-- Import Guide -->
+            <section id="import-guide">
+                <h2>Quick Import Guide</h2>
+
+                <h3>Import Everything</h3>
+                <pre><code>from CB9Lib import *
+
+# Access all functions directly
+header("My App", "v1.0")
+choice = menu("Menu", ["Option 1", "Option 2"])
+print_table(["Col1", "Col2"], [["A", "B"]])</code></pre>
+
+                <h3>Import Specific Functions</h3>
+                <pre><code>from CB9Lib import header, menu, print_table, color_text, RED, GREEN
+
+header("My App", "v1.0")
+print(color_text("Success", fg=GREEN))</code></pre>
+
+                <h3>Import Specific Modules</h3>
+                <pre><code>from CB9Lib.colors import color_text, RED, GREEN, CYAN
+from CB9Lib.func import header, menu, print_table
+from CB9Lib.validators import is_valid_email, validate_input</code></pre>
+            </section>
+
+            <!-- Complete Example -->
+            <section id="example">
+                <h2>Complete Example Script</h2>
+                <pre><code>#!/usr/bin/env python3
+"""Complete example using multiple CB9Lib features"""
+from CB9Lib import *
+
+def main():
+    # Display header
+    header("Database Backup Manager", "v2.0", "Automated MySQL Backup")
+
+    # Select databases
+    databases = ["mysql_prod", "mysql_dev", "postgres_app"]
+    selected = select_list("Select databases:", databases, multi=True)
+
+    if not selected:
+        print(color_text("No databases selected!", fg=RED))
+        return
+
+    # Confirm action
+    if not confirm(f"Backup {len(selected)} database(s)?"):
+        print(color_text("Backup cancelled", fg=YELLOW))
+        return
+
+    # Setup logging
+    log = get_logger("BackupManager", level=INFO, filename="backup.log")
+    log.info(f"Starting backup of {len(selected)} databases")
+
+    # Process with progress bar
+    backup_results = []
+    for i, db in enumerate(selected, 1):
+        progress_bar(i, len(selected), label="Backing up")
+        import time
+        time.sleep(0.5)
+        log.info(f"Backed up {db}")
+        backup_results.append({
+            "database": db,
+            "size": f"{i * 2.5:.1f} GB",
+            "status": "✓ Complete"
+        })
+
+    # Display results
+    print("\n")
+    print(color_text("Backup Results:", fg=BRIGHT_CYAN, style=BOLD))
+    print_dict_table(backup_results)
+
+    log.info("All backups completed")
+    print("\n" + color_text("✓ Backup complete!", fg=BRIGHT_GREEN, style=BOLD))
+
+if __name__ == "__main__":
+    main()</code></pre>
+            </section>
+
+            <hr>
+            <p style="text-align: center; color: var(--text-muted); margin-top: 60px;">
+                <strong>CB9Lib v1.3.0</strong> - Cloud Box 9 Inc. - MIT License<br>
+                <small>For more information, see README.md, QUICKSTART.md, and CHANGELOG_v1.3.md</small>
+            </p>
+        </main>
+    </div>
+
+    <a href="#" class="back-to-top" id="backToTop">↑</a>
+
+    <script>
+        // Back to top button
+        window.addEventListener('scroll', function() {
+            const backToTop = document.getElementById('backToTop');
+            if (window.pageYOffset > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Search functionality
+        function searchFunctions() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toLowerCase();
+            const sections = document.querySelectorAll('h4');
+
+            sections.forEach(section => {
+                const text = section.textContent.toLowerCase();
+                const parent = section.parentElement;
+
+                if (text.includes(filter)) {
+                    parent.style.display = '';
+                } else if (filter !== '') {
+                    parent.style.display = 'none';
+                } else {
+                    parent.style.display = '';
+                }
+            });
+        }
+
+        // Mobile sidebar toggle
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.menu-toggle');
+
+            if (window.innerWidth <= 1024 &&
+                !sidebar.contains(event.target) &&
+                !toggle.contains(event.target) &&
+                sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+            }
+        });
+    </script>
+</body>
+</html>

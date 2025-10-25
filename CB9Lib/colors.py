@@ -161,6 +161,122 @@ def banner(text: str, fg=CYAN, style=BOLD):
     line = "-" * 60
     print(f"{style}{fg}{line}\n{text.center(60)}\n{line}{RESET}")
 
+# -----------------------------------------------------------------------------
+# Color Themes (v1.3)
+# -----------------------------------------------------------------------------
+# Predefined color themes for consistent styling across applications
+
+THEME_DEFAULT = {
+    'primary': CYAN,
+    'secondary': MAGENTA,
+    'success': GREEN,
+    'warning': YELLOW,
+    'error': RED,
+    'info': BRIGHT_CYAN,
+    'highlight': BRIGHT_YELLOW,
+    'muted': DIM
+}
+
+THEME_OCEAN = {
+    'primary': BLUE,
+    'secondary': CYAN,
+    'success': GREEN,
+    'warning': YELLOW,
+    'error': RED,
+    'info': BRIGHT_BLUE,
+    'highlight': BRIGHT_CYAN,
+    'muted': BRIGHT_BLACK
+}
+
+THEME_FOREST = {
+    'primary': GREEN,
+    'secondary': CYAN,
+    'success': BRIGHT_GREEN,
+    'warning': YELLOW,
+    'error': RED,
+    'info': BRIGHT_CYAN,
+    'highlight': BRIGHT_GREEN,
+    'muted': DIM
+}
+
+THEME_SUNSET = {
+    'primary': MAGENTA,
+    'secondary': YELLOW,
+    'success': GREEN,
+    'warning': BRIGHT_YELLOW,
+    'error': RED,
+    'info': BRIGHT_MAGENTA,
+    'highlight': BRIGHT_YELLOW,
+    'muted': DIM
+}
+
+THEME_MONO = {
+    'primary': WHITE,
+    'secondary': BRIGHT_BLACK,
+    'success': WHITE,
+    'warning': WHITE,
+    'error': WHITE,
+    'info': BRIGHT_WHITE,
+    'highlight': BOLD,
+    'muted': DIM
+}
+
+# Active theme (starts with DEFAULT)
+_ACTIVE_THEME = THEME_DEFAULT.copy()
+
+
+def apply_theme(theme: dict) -> None:
+    """
+    Apply a color theme.
+
+    Args:
+        theme: Theme dictionary with color mappings
+
+    Example:
+        >>> apply_theme(THEME_OCEAN)
+        >>> print(color_text("Ocean themed!", fg=get_theme_color('primary')))
+    """
+    global _ACTIVE_THEME
+    _ACTIVE_THEME = theme.copy()
+
+
+def get_theme_color(key: str) -> str:
+    """
+    Get a color from the active theme.
+
+    Args:
+        key: Theme color key (primary, secondary, success, warning, error, info, highlight, muted)
+
+    Returns:
+        ANSI color code for the requested key
+
+    Example:
+        >>> color = get_theme_color('success')
+        >>> print(color_text("Success!", fg=color))
+    """
+    return _ACTIVE_THEME.get(key, RESET)
+
+
+def get_current_theme() -> dict:
+    """
+    Get the currently active theme.
+
+    Returns:
+        Dictionary of current theme colors
+    """
+    return _ACTIVE_THEME.copy()
+
+
+def list_themes() -> list:
+    """
+    List all available predefined themes.
+
+    Returns:
+        List of theme names
+    """
+    return ['DEFAULT', 'OCEAN', 'FOREST', 'SUNSET', 'MONO']
+
+
 def test_colors():
     """Show color preview (only works if colors enabled)."""
     banner("Standard Colors")
