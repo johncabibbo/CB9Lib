@@ -204,9 +204,9 @@ def header(title: str = "Untitled Script", version: str = "v1.2", subtitle: str 
     if subtitle != "":
         subtitle = "["+subtitle+"]"
     clear_screen()
-    print("-" * width)
+    print("=" * width)
     print(f" {BOLD}{CYAN}{title}{MAGENTA} {version} {BRIGHT_GREEN}{subtitle}{RESET}")
-    print("-" * width)
+    print("=" * width)
 
 
 def footerMenu(legend: str = "", width: int = 0) -> str:
