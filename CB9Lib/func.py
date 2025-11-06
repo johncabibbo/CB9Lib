@@ -399,7 +399,7 @@ def log_footer(job_name: str, version: str = "v1.2", filename: str = None):
             log_file.write(f"END: {end_time}\n")
             log_file.write(f"JOB: {job_name} {version}\n")
             log_file.write(f"{separator}\n\n")
-        print(color_text(f"[LOG] Completed: {job_name} {version}", BRIGHT_GREEN, style=BOLD))
+        # print(color_text(f"[LOG] Completed: {job_name} {version}", YELLOW, style=BOLD))
     except Exception as e:
         print(color_text(f"[ERROR] Could not write log footer: {e}", RED, style=BOLD))
 
