@@ -983,6 +983,58 @@ def get_file_info(path: str) -> dict:
 
 
 # -----------------------------------------------------------------------------
+# Master Execution Logging
+# -----------------------------------------------------------------------------
+MASTER_EXEC_LOG = "/Users/john-ash/Documents/logs/masterExec.log"
+
+
+def scriptStart(script_name: str) -> None:
+    """
+    Log script start to master execution log.
+
+    Args:
+        script_name: Name of the script being executed
+    """
+    try:
+        # Ensure log directory exists
+        log_dir = os.path.dirname(MASTER_EXEC_LOG)
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
+
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        log_entry = f"[{timestamp}] {script_name} - START\n"
+
+        with open(MASTER_EXEC_LOG, "a") as f:
+            f.write(log_entry)
+    except Exception:
+        # Silently fail - don't interrupt script execution
+        pass
+
+
+def scriptEnd(script_name: str) -> None:
+    """
+    Log script end to master execution log.
+
+    Args:
+        script_name: Name of the script being executed
+    """
+    try:
+        # Ensure log directory exists
+        log_dir = os.path.dirname(MASTER_EXEC_LOG)
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
+
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        log_entry = f"[{timestamp}] {script_name} - END\n"
+
+        with open(MASTER_EXEC_LOG, "a") as f:
+            f.write(log_entry)
+    except Exception:
+        # Silently fail - don't interrupt script execution
+        pass
+
+
+# -----------------------------------------------------------------------------
 # Debug/Test
 # -----------------------------------------------------------------------------
 def test_ui():

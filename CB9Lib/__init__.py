@@ -63,7 +63,9 @@ from .func import (
     # Advanced logging (v1.3)
     Logger, get_logger, DEBUG, INFO, WARNING, ERROR, CRITICAL,
     # Advanced file utilities (v1.3)
-    copy_file, move_file, search_files, get_file_info
+    copy_file, move_file, search_files, get_file_info,
+    # Master execution logging (v1.4)
+    scriptStart, scriptEnd, MASTER_EXEC_LOG
 )
 
 from .globals import (
@@ -135,6 +137,9 @@ __all__ = [
 
     # Advanced file utilities (v1.3)
     "copy_file", "move_file", "search_files", "get_file_info",
+
+    # Master execution logging (v1.4)
+    "scriptStart", "scriptEnd", "MASTER_EXEC_LOG",
 
     # Global settings
     "ROOT_DIR", "LOG_DIR", "TEMP_DIR",
