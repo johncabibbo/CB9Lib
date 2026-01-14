@@ -45,7 +45,7 @@ from .colors import (
 
 from .func import (
     # Core utilities
-    clear_screen, pause, sleep,
+    get_width, clear_screen, pause, sleep,
     # JSON helpers
     load_json_config, save_json_config,
     # UI elements
@@ -113,7 +113,7 @@ __all__ = [
     "apply_theme", "get_theme_color", "get_current_theme", "list_themes",
 
     # Core utility functions
-    "clear_screen", "pause", "sleep",
+    "get_width", "clear_screen", "pause", "sleep",
     "load_json_config", "save_json_config",
     "header", "footerMenu",
 

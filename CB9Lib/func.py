@@ -144,6 +144,17 @@ width = shutil.get_terminal_size().columns
 # -----------------------------------------------------------------------------
 # Core Utilities
 # -----------------------------------------------------------------------------
+def get_width() -> int:
+    """
+    Get the current terminal width.
+    Call this after clear_screen() to get the updated width if window was resized.
+
+    Returns:
+        int: Current terminal width in columns
+    """
+    return shutil.get_terminal_size().columns
+
+
 def clear_screen():
     """Clear the terminal screen."""
     os.system("clear" if os.name == "posix" else "cls")
