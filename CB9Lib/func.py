@@ -2,7 +2,7 @@
 #
 # Filename: func.py
 # Project: Shared Library
-# Version: 1.4
+# Version: 1.5
 # Description: Common functions for Cloud Box 9 projects (UI + JSON + Console).
 # Maintainer: Cloud Box 9 Inc.
 # Last Modified Date: 2026-03-17
@@ -129,7 +129,7 @@
 #   • Version officially marked as baseline v1.1.
 # -----------------------------------------------------------------------------
 
-import os, json, shutil, time, logging
+import os, json, shutil, time, logging, subprocess
 from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
@@ -260,6 +260,65 @@ def exit_screen(script_name: str, version: str, copyright_year: str = "2026", wi
     print(f"Copyright \u00a9 {copyright_year} Cloud Box 9 Inc. All rights reserved.")
     print()
     print("=" * width)
+
+# -----------------------------------------------------------------------------
+# Sound Utilities
+# -----------------------------------------------------------------------------
+
+def get_project_sound(project_name: str, sound_type: str, default_path: str) -> str:
+    """
+    Return the audio file path for a script, preferring a project-specific
+    override from ~/userProfile.json over the supplied default.
+
+    Lookup logic:
+      1. Load ~/userProfile.json
+      2. Find the entry in projectPreferences where projectName == project_name
+      3. If the entry has a key matching sound_type ('successAudio' or 'failureAudio')
+         and the resolved file exists on disk, return that path.
+      4. Otherwise return default_path.
+
+    Args:
+        project_name:  Matches projectPreferences[].projectName  (e.g. "Git Push All")
+        sound_type:    Key to look up — 'successAudio' or 'failureAudio'
+        default_path:  Fallback path (local audio/ file inside the script folder)
+
+    Returns:
+        Resolved path string (expanded ~ if needed).
+    """
+    try:
+        profile_path = os.path.expanduser("~/userProfile.json")
+        if not os.path.isfile(profile_path):
+            return default_path
+
+        with open(profile_path, "r", encoding="utf-8") as f:
+            profile = json.load(f)
+
+        prefs = profile.get("projectPreferences", [])
+        for entry in prefs:
+            if entry.get("projectName", "") == project_name:
+                raw = entry.get(sound_type, "")
+                if raw:
+                    resolved = os.path.expanduser(raw)
+                    if os.path.isfile(resolved):
+                        return resolved
+                break  # found the project, no override or file missing
+    except Exception:
+        pass  # never crash a script over a missing sound
+
+    return default_path
+
+
+def play_sound(filepath: str):
+    """
+    Play an audio file non-blocking via afplay (macOS).
+    Silently does nothing if the file does not exist.
+    """
+    if filepath and os.path.isfile(filepath):
+        subprocess.Popen(
+            ["afplay", filepath],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
 
 # -----------------------------------------------------------------------------
 # File Utilities
