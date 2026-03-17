@@ -125,7 +125,7 @@ def demo_file_utilities():
     header("File Utilities Demo", "v1.3", "Copy, Move, Search")
 
     print(color_text("\n1. Search for Python files", fg=BRIGHT_CYAN, style=BOLD))
-    results = search_files("/Users/john-ash/Documents/script/CB9Lib", "*.py", recursive=False)
+    results = search_files("~/Documents/script/CB9Lib", "*.py", recursive=False)
     print(f"Found {len(results)} Python files:")
     for f in results[:5]:  # Show first 5
         print(f"  - {f}")

@@ -483,7 +483,7 @@ This section contains custom commands that trigger specific actions. Add new com
 
 **Screenshot Reference Rule:**
 - When user says "latest screenshot" or references a screenshot without a specific path:
-  - Look in `/Users/john-ash/Documents/screenshotsLocal/`
+  - Look in `~/Documents/screenshotsLocal/`
   - Find the most recent image file (by modification time)
   - Read and analyze that file
   - Common image formats: .png, .jpg, .jpeg, .gif, .webp
@@ -509,7 +509,7 @@ This section contains custom commands that trigger specific actions. Add new com
 3. Write the formatted rules to file using the specified header format
 4. Confirm to user that the file has been written
 
-**Output Location:** `/Users/john-ash/Documents/script/chatlog/claude1Rules.txt`
+**Output Location:** `~/Documents/script/chatlog/claude1Rules.txt`
 
 **Output Format:** Human-readable markdown format including:
 - **Shortcuts list section** (at top) - All user-defined commands

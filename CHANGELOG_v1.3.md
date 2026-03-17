@@ -337,7 +337,7 @@ from CB9Lib.args import CB9ArgParser
 
 ### Installation
 ```bash
-cd /Users/john-ash/Documents/script/CB9Lib
+cd ~/Documents/script/CB9Lib
 pip install -e .
 
 # With image support

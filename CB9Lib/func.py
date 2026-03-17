@@ -996,7 +996,7 @@ def get_file_info(path: str) -> dict:
 # -----------------------------------------------------------------------------
 # Master Execution Logging
 # -----------------------------------------------------------------------------
-MASTER_EXEC_LOG = "/Users/john-ash/Documents/logs/masterExec.log"
+MASTER_EXEC_LOG = "~/Documents/logs/masterExec.log"
 
 
 def scriptStart(script_name: str) -> None:

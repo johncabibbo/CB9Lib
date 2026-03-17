@@ -49,7 +49,7 @@ def main():
     # Log something
     SCRIPT_NAME="example.py"
     VERSION="v1.0"
-    LOGFILE="/Users/john-ash/Documents/logs/example.log"
+    LOGFILE="~/Documents/logs/example.log"
     log_header(SCRIPT_NAME, VERSION, LOGFILE)
     write_log("Demo application started successfully")
 
