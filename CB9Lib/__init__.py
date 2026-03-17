@@ -49,7 +49,7 @@ from .func import (
     # JSON helpers
     load_json_config, save_json_config,
     # UI elements
-    header, footerMenu,
+    header, footerMenu, exit_screen,
     # File utilities
     file_exists, folder_exists, ensure_folder, list_files, remove_files,
     # Logging (original)
@@ -115,7 +115,7 @@ __all__ = [
     # Core utility functions
     "get_width", "clear_screen", "pause", "sleep",
     "load_json_config", "save_json_config",
-    "header", "footerMenu",
+    "header", "footerMenu", "exit_screen",
 
     # File utilities
     "file_exists", "folder_exists", "ensure_folder", "list_files", "remove_files",

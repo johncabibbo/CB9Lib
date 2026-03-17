@@ -2,10 +2,10 @@
 #
 # Filename: func.py
 # Project: Shared Library
-# Version: 1.3
+# Version: 1.4
 # Description: Common functions for Cloud Box 9 projects (UI + JSON + Console).
 # Maintainer: Cloud Box 9 Inc.
-# Last Modified Date: 2025-10-24
+# Last Modified Date: 2026-03-17
 # -----------------------------------------------------------------------------
 # Function List:
 # -----------------------------------------------------------------------------
@@ -233,6 +233,33 @@ def footerMenu(legend: str = "", width: int = 0) -> str:
     print("-" * width)
     choice = input(f"{BOLD}{WHITE}> {RESET}").strip().lower()
     return choice
+
+
+def exit_screen(script_name: str, version: str, copyright_year: str = "2026", width: int = 0):
+    """
+    Display the standard CB9 exit screen and terminate.
+
+    Shows:
+      - Header (= bar / title / = bar)
+      - "<script_name> exiting..."
+      - Copyright notice
+      - A closing = separator line
+
+    This is the canonical exit display for ALL CB9 scripts.
+    Always call this instead of rolling your own exit block.
+    """
+    if width == 0:
+        width = shutil.get_terminal_size().columns
+    clear_screen()
+    print("=" * width)
+    print(f" {BOLD}{CYAN}{script_name}{MAGENTA} {version}{RESET}")
+    print("=" * width)
+    print()
+    print(color_text(f"{script_name} exiting...", fg=CYAN))
+    print()
+    print(f"Copyright \u00a9 {copyright_year} Cloud Box 9 Inc. All rights reserved.")
+    print()
+    print("=" * width)
 
 # -----------------------------------------------------------------------------
 # File Utilities
