@@ -2,10 +2,10 @@
 #
 # Filename: func.py
 # Project: Shared Library
-# Version: 1.5
+# Version: 1.6
 # Description: Common functions for Cloud Box 9 projects (UI + JSON + Console).
 # Maintainer: Cloud Box 9 Inc.
-# Last Modified Date: 2026-03-17
+# Last Modified Date: 2026-03-19
 # -----------------------------------------------------------------------------
 # Function List:
 # -----------------------------------------------------------------------------
@@ -105,6 +105,13 @@
 # -----------------------------------------------------------------------------
 # Revision History:
 # -----------------------------------------------------------------------------
+# v1.6 (2026-03-19)
+#   • play_sound() now accepts http/https URLs: downloads to a temp file,
+#     plays via afplay, then deletes the temp file (non-blocking)
+#   • get_project_sound() no longer rejects URL values with os.path.isfile();
+#     URLs pass through directly as valid overrides
+#   • Added urllib.request and tempfile imports
+#
 # v1.3 (2025-10-24)
 #   • Major security update to remove_files() function
 #   • Replaced shell command execution with native pathlib operations (eliminates shell injection risk)
@@ -129,7 +136,7 @@
 #   • Version officially marked as baseline v1.1.
 # -----------------------------------------------------------------------------
 
-import os, json, shutil, time, logging, subprocess
+import os, json, shutil, time, logging, subprocess, tempfile, urllib.request
 from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
@@ -298,6 +305,8 @@ def get_project_sound(project_name: str, sound_type: str, default_path: str) -> 
             if entry.get("projectName", "") == project_name:
                 raw = entry.get(sound_type, "")
                 if raw:
+                    if raw.startswith("http://") or raw.startswith("https://"):
+                        return raw  # URL — pass through as-is
                     resolved = os.path.expanduser(raw)
                     if os.path.isfile(resolved):
                         return resolved
@@ -311,9 +320,34 @@ def get_project_sound(project_name: str, sound_type: str, default_path: str) -> 
 def play_sound(filepath: str):
     """
     Play an audio file non-blocking via afplay (macOS).
-    Silently does nothing if the file does not exist.
+    Accepts a local file path or an http/https URL.
+    For URLs, downloads to a temp file, plays it, then deletes it.
+    Silently does nothing if the file does not exist or download fails.
     """
-    if filepath and os.path.isfile(filepath):
+    if not filepath:
+        return
+
+    if filepath.startswith("http://") or filepath.startswith("https://"):
+        try:
+            suffix = os.path.splitext(filepath.split("?")[0])[1] or ".mp3"
+            tmp = tempfile.NamedTemporaryFile(suffix=suffix, delete=False)
+            tmp.close()
+            urllib.request.urlretrieve(filepath, tmp.name)
+            def _play_and_delete(path):
+                subprocess.run(
+                    ["afplay", path],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                )
+                try:
+                    os.unlink(path)
+                except Exception:
+                    pass
+            import threading
+            threading.Thread(target=_play_and_delete, args=(tmp.name,), daemon=True).start()
+        except Exception:
+            pass  # never crash a script over a missing sound
+    elif os.path.isfile(filepath):
         subprocess.Popen(
             ["afplay", filepath],
             stdout=subprocess.DEVNULL,
