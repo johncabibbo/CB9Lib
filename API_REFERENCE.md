@@ -950,7 +950,7 @@ test_ui()
 
 ```python
 ROOT_DIR   # ~/Documents/script
-LOG_DIR    # ~/Documents/logs
+LOG_DIR    # ~/Documents/log
 TEMP_DIR   # ~/Documents/script/temp
 ```
 

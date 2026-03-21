@@ -51,7 +51,7 @@
 # folder_exists(path: str) -> bool
 #     Check if a directory exists
 #     path: Path to directory (absolute or relative)
-#           Example: "logs" or "/Users/user/Documents/logs"
+#           Example: "logs" or "/Users/user/Documents/log"
 #
 # ensure_folder(path: str)
 #     Create directory if not existing
@@ -76,28 +76,28 @@
 #     Write log message to file and print to console
 #     message: Log message to write
 #     filename: Optional log file path (absolute or relative, auto-generated if None)
-#               Example: "/Users/user/Documents/logs/app.log"
+#               Example: "/Users/user/Documents/log/app.log"
 #
 # log_header(job_name: str, version: str = "v1.2", filename: str = None) -> str
 #     Write log header at start of job, returns filename
 #     job_name: Name of the job/script
 #     version: Version string
 #     filename: Optional log file path (absolute or relative, auto-generated if None)
-#               Example: "/Users/user/Documents/logs/backup.log"
+#               Example: "/Users/user/Documents/log/backup.log"
 #
 # log_footer(job_name: str, version: str = "v1.2", filename: str = None)
 #     Write log footer at end of job
 #     job_name: Name of the job/script
 #     version: Version string
 #     filename: Log file path (absolute or relative)
-#               Example: "/Users/user/Documents/logs/backup.log"
+#               Example: "/Users/user/Documents/log/backup.log"
 #
 # logRotate(script_name: str, version: str = "v1.2", old_filename: str = None) -> str
 #     Rotate log file, create new timestamped file with header, returns new filename
 #     script_name: Name of the script/job
 #     version: Version string
 #     old_filename: Optional previous log file to close (absolute or relative)
-#                   Example: "/Users/user/Documents/logs/backup_2025-10-23.log"
+#                   Example: "/Users/user/Documents/log/backup_2025-10-23.log"
 #
 # test_ui()
 #     Demonstrate header, footer, and color usage
@@ -1116,7 +1116,7 @@ def get_file_info(path: str) -> dict:
 # -----------------------------------------------------------------------------
 # Master Execution Logging
 # -----------------------------------------------------------------------------
-MASTER_EXEC_LOG = "~/Documents/logs/masterExec.log"
+MASTER_EXEC_LOG = "~/Documents/log/masterExec.log"
 
 
 def scriptStart(script_name: str) -> None:
