@@ -28,6 +28,7 @@ from . import imgvid
 from . import args
 from . import validators
 from . import testing
+from . import job_logger
 
 # Import commonly used items for convenience
 from .colors import (
@@ -95,7 +96,9 @@ from .testing import (
     get_test_stats, reset_test_stats
 )
 
-__version__ = "1.3.0"
+from .job_logger import JobLogger
+
+__version__ = "1.4.0"
 
 __all__ = [
     # Modules
@@ -163,4 +166,7 @@ __all__ = [
     "assert_equals", "assert_true", "assert_false",
     "test_suite", "mock_input", "capture_output",
     "get_test_stats", "reset_test_stats",
+
+    # Job logging + alerting (v1.4)
+    "job_logger", "JobLogger",
 ]
