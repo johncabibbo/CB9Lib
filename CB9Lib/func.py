@@ -2,10 +2,10 @@
 #
 # Filename: func.py
 # Project: Shared Library
-# Version: 1.6
+# Version: 1.7
 # Description: Common functions for Cloud Box 9 projects (UI + JSON + Console).
 # Maintainer: Cloud Box 9 Inc.
-# Last Modified Date: 2026-03-19
+# Last Modified Date: 2026-04-19
 # -----------------------------------------------------------------------------
 # Function List:
 # -----------------------------------------------------------------------------
@@ -105,6 +105,13 @@
 # -----------------------------------------------------------------------------
 # Revision History:
 # -----------------------------------------------------------------------------
+# v1.7 (2026-04-19)
+#   • MASTER_EXEC_LOG: hardened against rogue literal-`~` folders.
+#     When expanduser("~/...") returns unchanged (HOME unset + no valid
+#     passwd home, e.g. sudo/cron/www-data on BPA5), fall back to
+#     $HOME or /home/ubuntu. scriptStart/scriptEnd also refuse to run
+#     if the resolved path still begins with `~`.
+#
 # v1.6 (2026-03-19)
 #   • play_sound() now accepts http/https URLs: downloads to a temp file,
 #     plays via afplay, then deletes the temp file (non-blocking)
@@ -1116,7 +1123,18 @@ def get_file_info(path: str) -> dict:
 # -----------------------------------------------------------------------------
 # Master Execution Logging
 # -----------------------------------------------------------------------------
-MASTER_EXEC_LOG = "~/Documents/log/masterExec.log"
+def _resolveMasterLog() -> str:
+    # expanduser silently returns "~/..." unchanged when HOME is unset AND
+    # the running user has no valid passwd home (sudo/cron/www-data on BPA5).
+    # Falling through to os.makedirs(~) then creates a literal `~` folder.
+    p = os.path.expanduser("~/Documents/log/masterExec.log")
+    if p.startswith("~"):
+        home = os.environ.get("HOME") or "/home/ubuntu"
+        p = os.path.join(home, "Documents/log/masterExec.log")
+    return p
+
+
+MASTER_EXEC_LOG = _resolveMasterLog()
 
 
 def scriptStart(script_name: str) -> None:
@@ -1127,7 +1145,8 @@ def scriptStart(script_name: str) -> None:
         script_name: Name of the script being executed
     """
     try:
-        # Ensure log directory exists
+        if MASTER_EXEC_LOG.startswith("~"):
+            return
         log_dir = os.path.dirname(MASTER_EXEC_LOG)
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)
@@ -1150,7 +1169,8 @@ def scriptEnd(script_name: str) -> None:
         script_name: Name of the script being executed
     """
     try:
-        # Ensure log directory exists
+        if MASTER_EXEC_LOG.startswith("~"):
+            return
         log_dir = os.path.dirname(MASTER_EXEC_LOG)
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)
