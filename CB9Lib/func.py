@@ -742,7 +742,7 @@ def confirm(prompt: str, default: bool = True) -> bool:
         elif response in ('n', 'no'):
             return False
         else:
-            print("Please answer 'y' or 'n'")
+            pass
 
 
 # -----------------------------------------------------------------------------
